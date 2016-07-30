@@ -23,11 +23,14 @@ public class CraigslistChecker extends AsyncTask<URL, String, Boolean> {
 
     private static final String TAG = "CraigslistChecker";
 
-    static final String SEARCH_STRING = "https://boulder.craigslist.org/search/sss?query=Super+Nintendo&excats=20-170&sort=rel&postedToday=1&searchNearby=2&nearbyArea=13&nearbyArea=713&nearbyArea=287&nearbyArea=288&nearbyArea=315&max_price=1001";
+    static final String SEARCH_STRING = "https://boulder.craigslist.org/search/sss?query=Super+Nintendo+-ds+-3ds+-wii&excats=20-170&sort=rel&postedToday=1&searchNearby=2&nearbyArea=13&max_price=1001";
     static final String SEARCH_NAME = "Super-Nintendo";
 
-    static final String SEARCH_STRING2 = "https://boulder.craigslist.org/search/sss?query=SNES&sort=rel&postedToday=1&searchNearby=2&nearbyArea=210&nearbyArea=13&nearbyArea=713&nearbyArea=287&nearbyArea=288&nearbyArea=315&max_price=1001";
+    static final String SEARCH_STRING2 = "https://boulder.craigslist.org/search/sss?query=SNES+-ds+-3ds+-wii&excats=20-170&sort=rel&postedToday=1&searchNearby=2&nearbyArea=13&max_price=1001";
     static final String SEARCH_NAME2 = "SNES";
+
+    static final String SEARCH_STRING3 = "https://boulder.craigslist.org/search/sss?query=garage+sale+super+nintendo&sort=rel&postedToday=1&searchNearby=2&nearbyArea=13&max_price=1001";
+    static final String SEARCH_NAME3 = "Garage-Sales";
 
     public BackgroundServiceMonitor parentActivity;
 
@@ -62,7 +65,7 @@ public class CraigslistChecker extends AsyncTask<URL, String, Boolean> {
 
         Notification notification = new Notification.Builder(parentActivity)
                 .setTicker("New link posted under '" + searchName + "'")
-                .setContentTitle("Check updated search page!")
+                .setContentTitle("New link - '" + searchName + "'")
                 .setContentText("Click this to go directly there")
                 .setAutoCancel(true)
                 .setSmallIcon(R.drawable.ic_launcher)
@@ -79,6 +82,8 @@ public class CraigslistChecker extends AsyncTask<URL, String, Boolean> {
             LinkCheck.CheckSaleLinks(this, SEARCH_STRING, SEARCH_NAME);
             Sleep.waitThenContinueShort();
             LinkCheck.CheckSaleLinks(this, SEARCH_STRING2, SEARCH_NAME2);
+            Sleep.waitThenContinueShort();
+            LinkCheck.CheckSaleLinks(this, SEARCH_STRING3, SEARCH_NAME3);
             Sleep.waitThenContinueLong();
         }
     }
