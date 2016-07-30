@@ -31,7 +31,7 @@ public class LinkCheck {
 
     public static void CheckSaleLinks(CraigslistChecker checker, String searchURL, String searchName){
 
-        Log.i(TAG, "Running search for " + searchName);
+        Log.i(TAG, "RUNNING SEARCH NAMED: " + searchName);
         Log.d(TAG, "Search url: " + searchURL);
 
         HashSet<String> setUrls = new HashSet<>();
