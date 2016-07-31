@@ -2,6 +2,7 @@ package com.example.maveric.craigslistdiffchecker.uniquenessCheckers;
 
 import android.util.Log;
 
+import com.example.maveric.craigslistdiffchecker.files.Paths;
 import com.example.maveric.craigslistdiffchecker.service.CraigSearch;
 import com.example.maveric.craigslistdiffchecker.service.CraigslistChecker;
 
@@ -108,7 +109,7 @@ public class LinkCheck {
             }
 
             // Just pass the search "name" in for the 3rd argument and that can be the search file to check against
-            writeLinksFile(listJustPulledUrls, checker.folderLocationLinkCache, search.name);
+            writeLinksFile(listJustPulledUrls, Paths.folderLocationLinkCache, search.name);
             mapMasterURLList.get(search).addAll(listJustPulledUrls);
         } else {
             Log.i(TAG, "No changes spotted on the page.");

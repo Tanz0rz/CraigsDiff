@@ -14,6 +14,8 @@ import android.util.Log;
 
 import com.example.maveric.craigslistdiffchecker.R;
 import com.example.maveric.craigslistdiffchecker.exception.SearchLoadException;
+import com.example.maveric.craigslistdiffchecker.files.ConfigFiles;
+import com.example.maveric.craigslistdiffchecker.files.Paths;
 import com.example.maveric.craigslistdiffchecker.sleeper.Sleep;
 import com.example.maveric.craigslistdiffchecker.uniquenessCheckers.LinkCheck;
 
@@ -44,12 +46,6 @@ public class CraigslistChecker extends AsyncTask<URL, String, Boolean> {
 //    static final String SEARCH_STRING3 = "https://boulder.craigslist.org/search/sss?query=garage+sale+super+nintendo&sort=rel&postedToday=1&searchNearby=2&nearbyArea=13&max_price=1001";
 //    static final String SEARCH_NAME3 = "Garage-Sales";
 
-    public final String baseFolder = Environment.getExternalStorageDirectory() + File.separator + "CraigslistChecker";
-
-    public final String dataFolderLocation = baseFolder + File.separator + "data";
-    public final String saveSearchesPath = dataFolderLocation + File.separator + "savedSearches";
-
-    public final String folderLocationLinkCache = baseFolder + File.separator + "linkCache";
     public HashMap<CraigSearch, ArrayList<String>> mapSearches;
 
     public BackgroundServiceMonitor parentActivity;
@@ -101,6 +97,7 @@ public class CraigslistChecker extends AsyncTask<URL, String, Boolean> {
     public void checkCraigslist() {
 
         while (!isCancelled()) {
+            Sleep.waitThenContinueShort();
             for (CraigSearch search : mapSearches.keySet()) {
                 LinkCheck.CheckSaleLinks(this, search);
                 Sleep.waitThenContinueShort();
@@ -121,21 +118,9 @@ public class CraigslistChecker extends AsyncTask<URL, String, Boolean> {
 
         Log.d(TAG, "Loading application state!");
 
-        File savedSearchesFile = new File(saveSearchesPath);
-        savedSearchesFile.mkdirs();
+        List<CraigSearch> savedSearches = ConfigFiles.loadAllSavedSearches();
 
-        List<CraigSearch> savedSearches = new ArrayList<>();
-
-        if (savedSearchesFile.exists()) {
-            try {
-                savedSearches = loadSavedSearches(savedSearchesFile);
-            } catch (SearchLoadException e) {
-                // TODO: exit program here? Continue without any searches loaded?
-                Log.e(TAG, "Failed to load saved searches: " + Log.getStackTraceString(e));
-            }
-        }
-
-        File linkCacheFolder = new File(folderLocationLinkCache);
+        File linkCacheFolder = new File(Paths.folderLocationLinkCache);
         linkCacheFolder.mkdirs();
 
         // try to find cache files for any searches we have saved and load them
@@ -155,32 +140,6 @@ public class CraigslistChecker extends AsyncTask<URL, String, Boolean> {
                     Log.d(TAG, "No cache file found for: " + savedSearch.name);
                 }
             }
-        }
-    }
-
-    private List<CraigSearch> loadSavedSearches(File savedSearchesFile) throws SearchLoadException {
-        try {
-            List<CraigSearch> searchesList = new ArrayList<>();
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(savedSearchesFile));
-            JsonReader reader = new JsonReader(bufferedReader);
-            if (reader.hasNext()) {
-                reader.beginArray();
-                while (reader.hasNext()) {
-                    reader.beginObject();
-                    reader.nextName();
-                    String name = reader.nextString();
-                    reader.nextName();
-                    String url = reader.nextString();
-                    Log.i(TAG, "Found search line: " + name + " = '" + url + "'");
-                    searchesList.add(new CraigSearch(name, url));
-                    reader.endObject();
-                }
-                reader.endArray();
-            }
-            reader.close();
-            return searchesList;
-        } catch (IOException e) {
-            throw new SearchLoadException("Failed to read file", e);
         }
     }
 

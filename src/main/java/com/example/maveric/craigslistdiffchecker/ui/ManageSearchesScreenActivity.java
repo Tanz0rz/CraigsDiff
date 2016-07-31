@@ -15,9 +15,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.maveric.craigslistdiffchecker.R;
+import com.example.maveric.craigslistdiffchecker.files.ConfigFiles;
 import com.example.maveric.craigslistdiffchecker.service.BackgroundServiceMonitor;
 import com.example.maveric.craigslistdiffchecker.service.CraigSearch;
 
@@ -32,34 +34,25 @@ public class ManageSearchesScreenActivity extends AppCompatActivity{
     public static String TAG = "ManageSearch";
 
     ListView lstSeaches;
+    List<CraigSearch> allSearches;
+    ArrayAdapter<CraigSearch> arrayAdapter;
+
     Button btnAddSearch;
+
+    Intent backgroundService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.manage_searches);
 
+        backgroundService = new Intent(getBaseContext(), BackgroundServiceMonitor.class);
+
         lstSeaches = (ListView) findViewById(R.id.lstSearches);
 
-        List<CraigSearch> testList = new ArrayList<>();
-        testList.add(new CraigSearch("search1", "google.com"));
-        testList.add(new CraigSearch("search2", "yahoo.com"));
-        testList.add(new CraigSearch("search2", "yahoo.com"));
-        testList.add(new CraigSearch("search2", "yahoo.com"));
-        testList.add(new CraigSearch("search2", "yahoo.com"));
-        testList.add(new CraigSearch("search2", "yahoo.com"));
-        testList.add(new CraigSearch("search2", "yahoo.com"));
-        testList.add(new CraigSearch("search2", "yahoo.com"));
-        testList.add(new CraigSearch("search2", "yahoo.com"));
-        testList.add(new CraigSearch("search2", "yahoo.com"));
-        testList.add(new CraigSearch("search2", "yahoo.com"));
-        testList.add(new CraigSearch("search2", "yahoo.com"));
-        testList.add(new CraigSearch("search2", "yahoo.com"));
-        testList.add(new CraigSearch("search2", "yahoo.com"));
-        testList.add(new CraigSearch("search2", "yahoo.com"));
-        testList.add(new CraigSearch("search2", "yahoo.com"));
+        allSearches = ConfigFiles.loadAllSavedSearches();
 
-        final ArrayAdapter<CraigSearch> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, testList);
+        arrayAdapter =  new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, allSearches);
 
         lstSeaches.setAdapter(arrayAdapter);
 
@@ -78,6 +71,8 @@ public class ManageSearchesScreenActivity extends AppCompatActivity{
                         //do your work here
                         Log.d(TAG, "" + position);
                         arrayAdapter.remove(arrayAdapter.getItem(position));
+                        ConfigFiles.saveSearchesToFile(allSearches);
+                        signalRefresh();
                         dialog.dismiss();
 
                     }
@@ -112,23 +107,40 @@ public class ManageSearchesScreenActivity extends AppCompatActivity{
 
         LinearLayout lila1= new LinearLayout(this);
         lila1.setOrientation(LinearLayout.VERTICAL); //1 is for vertical orientation
-        final EditText input = new EditText(this);
-        final EditText input1 = new EditText(this);
-        lila1.addView(input);
-        lila1.addView(input1);
+        final TextView nameLabel = new TextView(this);
+        nameLabel.setText("Name");
+        final EditText nameInput = new EditText(this);
+
+        final TextView linkLabel = new TextView(this);
+        linkLabel.setText("URL");
+        final EditText linkInput = new EditText(this);
+
+        lila1.addView(nameLabel);
+        lila1.addView(nameInput);
+        lila1.addView(linkLabel);
+        lila1.addView(linkInput);
         alert.setView(lila1);
 
         alert.setTitle("Add Search");
 
-        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        alert.setPositiveButton("Save", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                String value = input.getText().toString().trim();
-                Toast.makeText(getApplicationContext(), value, Toast.LENGTH_SHORT).show();
+                CraigSearch newSearch = new CraigSearch(nameInput.getText().toString(), linkInput.getText().toString());
+                arrayAdapter.add(newSearch);
+                //save to file
+                ConfigFiles.saveSearchesToFile(allSearches);
+                Toast.makeText(getApplicationContext(), "'" + newSearch.name + "' created", Toast.LENGTH_SHORT).show();
+                signalRefresh();
             }                     });
         alert.setNegativeButton("Cancel",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         dialog.cancel();    }     });
         return alert.create();
+    }
+
+    private void signalRefresh() {
+        stopService(backgroundService);
+        startService(backgroundService);
     }
 }
