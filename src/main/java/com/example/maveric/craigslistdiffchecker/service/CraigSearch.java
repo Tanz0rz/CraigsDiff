@@ -11,4 +11,9 @@ public class CraigSearch {
         this.name = name;
         this.url = url;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

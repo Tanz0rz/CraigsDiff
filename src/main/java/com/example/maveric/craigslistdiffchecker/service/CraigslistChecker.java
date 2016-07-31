@@ -105,12 +105,6 @@ public class CraigslistChecker extends AsyncTask<URL, String, Boolean> {
                 LinkCheck.CheckSaleLinks(this, search);
                 Sleep.waitThenContinueShort();
             }
-//            LinkCheck.CheckSaleLinks(this, SEARCH_STRING, SEARCH_NAME);
-//            Sleep.waitThenContinueShort();
-//            LinkCheck.CheckSaleLinks(this, SEARCH_STRING2, SEARCH_NAME2);
-//            Sleep.waitThenContinueShort();
-//            LinkCheck.CheckSaleLinks(this, SEARCH_STRING3, SEARCH_NAME3);
-//            Sleep.waitThenContinueLong();
         }
     }
 

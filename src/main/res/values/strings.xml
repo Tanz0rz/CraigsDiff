@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">CraigslistDiffChecker</string>
+    <string name="addSearchText">+</string>
 </resources>
