@@ -5,6 +5,7 @@ import android.util.JsonWriter;
 import android.util.Log;
 
 import com.example.maveric.craigslistdiffchecker.exception.SearchLoadException;
+import com.example.maveric.craigslistdiffchecker.exception.SearchSaveException;
 import com.example.maveric.craigslistdiffchecker.service.CraigSearch;
 
 import java.io.BufferedReader;
@@ -65,14 +66,14 @@ public class ConfigFiles {
         }
     }
 
-    public static void saveSearchesToFile(List<CraigSearch> searchesToSave) {
+    public static void saveSearchesToFile(List<CraigSearch> searchesToSave) throws SearchSaveException {
         File savedSearchesFile = new File(Paths.saveSearchesPath);
         savedSearchesFile.mkdirs();
 
         try {
             writeToFile(searchesToSave);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new SearchSaveException("Failed to read file", e);
         }
     }
 

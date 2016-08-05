@@ -97,11 +97,11 @@ public class CraigslistChecker extends AsyncTask<URL, String, Boolean> {
     public void checkCraigslist() {
 
         while (!isCancelled()) {
-            Sleep.waitThenContinueShort();
             for (CraigSearch search : mapSearches.keySet()) {
-                LinkCheck.CheckSaleLinks(this, search);
                 Sleep.waitThenContinueShort();
+                LinkCheck.CheckSaleLinks(this, search);
             }
+            Sleep.waitThenContinueLong();
         }
     }
 
