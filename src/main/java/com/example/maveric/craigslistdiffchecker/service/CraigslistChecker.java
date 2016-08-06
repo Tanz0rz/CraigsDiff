@@ -7,23 +7,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.os.Vibrator;
-import android.util.JsonReader;
 import android.util.Log;
 
 import com.example.maveric.craigslistdiffchecker.R;
-import com.example.maveric.craigslistdiffchecker.exception.SearchLoadException;
 import com.example.maveric.craigslistdiffchecker.files.ConfigFiles;
 import com.example.maveric.craigslistdiffchecker.files.Paths;
 import com.example.maveric.craigslistdiffchecker.sleeper.Sleep;
 import com.example.maveric.craigslistdiffchecker.uniquenessCheckers.LinkCheck;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,20 +31,9 @@ public class CraigslistChecker extends AsyncTask<URL, String, Boolean> {
 
     public static final String TAG = "CraigslistChecker";
 
-//    static final String SEARCH_STRING = "https://boulder.craigslist.org/search/sss?query=Super+Nintendo+-ds+-3ds+-wii&excats=20-170&sort=rel&postedToday=1&searchNearby=2&nearbyArea=13&max_price=1001";
-//    static final String SEARCH_NAME = "Super-Nintendo";
-//
-//    static final String SEARCH_STRING2 = "https://boulder.craigslist.org/search/sss?query=SNES+-ds+-3ds+-wii&excats=20-170&sort=rel&postedToday=1&searchNearby=2&nearbyArea=13&max_price=1001";
-//    static final String SEARCH_NAME2 = "SNES";
-//
-//    static final String SEARCH_STRING3 = "https://boulder.craigslist.org/search/sss?query=garage+sale+super+nintendo&sort=rel&postedToday=1&searchNearby=2&nearbyArea=13&max_price=1001";
-//    static final String SEARCH_NAME3 = "Garage-Sales";
-
     public HashMap<CraigSearch, ArrayList<String>> mapSearches;
 
     public BackgroundServiceMonitor parentActivity;
-
-    private List<CraigSearch> trackedSearches;
 
     public CraigslistChecker(BackgroundServiceMonitor backgroundServiceMonitor){
         parentActivity = backgroundServiceMonitor;

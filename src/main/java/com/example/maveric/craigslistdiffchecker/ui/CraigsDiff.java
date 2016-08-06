@@ -25,7 +25,6 @@ public class CraigsDiff extends AppCompatActivity {
 
         btnStartService = (Button) findViewById(R.id.btnStartService);
         btnStopService = (Button) findViewById(R.id.btnStopService);
-
         btnManageSearches = (Button) findViewById(R.id.btnManageSearches);
 
         backgroundService = new Intent(getBaseContext(), BackgroundServiceMonitor.class);
