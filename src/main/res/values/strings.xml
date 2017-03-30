@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">CraigslistDiffChecker</string>
+    <string name="addSearchText">+</string>
+    <string name="pasteUrlHint">Paste Search URL...</string>
+    <string name="searchNameHint">Enter Search Name...</string>
 </resources>

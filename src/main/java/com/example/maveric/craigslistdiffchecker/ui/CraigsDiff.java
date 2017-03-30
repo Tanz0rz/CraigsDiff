@@ -14,6 +14,8 @@ public class CraigsDiff extends AppCompatActivity {
     Button btnStartService;
     Button btnStopService;
 
+    Button btnManageSearches;
+
     Intent backgroundService;
 
     @Override
@@ -23,6 +25,7 @@ public class CraigsDiff extends AppCompatActivity {
 
         btnStartService = (Button) findViewById(R.id.btnStartService);
         btnStopService = (Button) findViewById(R.id.btnStopService);
+        btnManageSearches = (Button) findViewById(R.id.btnManageSearches);
 
         backgroundService = new Intent(getBaseContext(), BackgroundServiceMonitor.class);
 
@@ -37,6 +40,15 @@ public class CraigsDiff extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 stopService(backgroundService);
+            }
+        });
+
+        btnManageSearches.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent nextScreen = new Intent(getApplicationContext(),ManageSearchesScreenActivity.class);
+
+                startActivity(nextScreen);
             }
         });
     }

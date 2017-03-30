@@ -31,4 +31,13 @@
         android:layout_below="@+id/btnStartService"
         android:text="Stop service"
         android:textSize="20dp"/>
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Manage Searches"
+        android:id="@+id/btnManageSearches"
+        android:layout_below="@+id/btnStopService"
+        android:layout_centerHorizontal="true"
+        android:textSize="20dp" />
 </RelativeLayout>
