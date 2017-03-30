@@ -65,6 +65,8 @@ public class BackgroundServiceMonitor extends Service {
 
         File folder = new File(folderLocationLinksState);
 
+        folder.mkdirs();
+
         for (final File fileEntry : folder.listFiles()) {
             Log.d(TAG, "Scanning directory. Found file: " + fileEntry.getName());
             readFile(fileEntry);
