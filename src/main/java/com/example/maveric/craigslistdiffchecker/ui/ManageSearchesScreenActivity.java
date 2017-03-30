@@ -1,7 +1,8 @@
 package com.example.maveric.craigslistdiffchecker.ui;
 
-import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Dialog;
+import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,74 +20,68 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.maveric.craigslistdiffchecker.R;
+import com.example.maveric.craigslistdiffchecker.dialog.DeleteSearchDialogFragment;
+import com.example.maveric.craigslistdiffchecker.dialog.SearchEditDialogFragment;
 import com.example.maveric.craigslistdiffchecker.files.ConfigFiles;
 import com.example.maveric.craigslistdiffchecker.service.BackgroundServiceMonitor;
 import com.example.maveric.craigslistdiffchecker.service.CraigSearch;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 
 /**
  * Created by Monday on 7/31/2016.
  */
-public class ManageSearchesScreenActivity extends AppCompatActivity{
+public class ManageSearchesScreenActivity extends AppCompatActivity {
 
     public static String TAG = "ManageSearch";
 
-    ListView lstSeaches;
+    ListView lstSearches;
     List<CraigSearch> allSearches;
     ArrayAdapter<CraigSearch> arrayAdapter;
 
     Button btnAddSearch;
 
     Intent backgroundService;
+    private FragmentManager fm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.manage_searches);
 
+        fm = getFragmentManager();
+
+
         backgroundService = new Intent(getBaseContext(), BackgroundServiceMonitor.class);
 
-        lstSeaches = (ListView) findViewById(R.id.lstSearches);
+        lstSearches = (ListView) findViewById(R.id.lstSearches);
 
         allSearches = ConfigFiles.loadAllSavedSearches();
 
-        arrayAdapter =  new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, allSearches);
+        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, allSearches);
 
-        lstSeaches.setAdapter(arrayAdapter);
+        lstSearches.setAdapter(arrayAdapter);
 
-        lstSeaches.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        lstSearches.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int position, long id) {
+                CraigSearch clickedSearchItem = arrayAdapter.getItem(position);
+                Bundle bundle = new Bundle();
+                bundle.putString("name", clickedSearchItem.name);
+                showRemoveSearchDialog(bundle);
+                return true;
+            }
+        });
+
+        lstSearches.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, final int position, long id) {
-                Log.d(TAG, adapterView.getItemAtPosition(position).toString());
-                AlertDialog.Builder alert = new AlertDialog.Builder(
-                        ManageSearchesScreenActivity.this);
-                alert.setTitle("Remove");
-                alert.setMessage("Would you like to remove this search?");
-                alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //do your work here
-                        Log.d(TAG, "" + position);
-                        arrayAdapter.remove(arrayAdapter.getItem(position));
-                        ConfigFiles.saveSearchesToFile(allSearches);
-                        signalRefresh();
-                        dialog.dismiss();
-
-                    }
-                });
-                alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        dialog.dismiss();
-                    }
-                });
-
-                alert.show();
+                CraigSearch clickedSearchItem = arrayAdapter.getItem(position);
+                Bundle bundle = new Bundle();
+                bundle.putString("name", clickedSearchItem.name);
+                bundle.putString("url", clickedSearchItem.url);
+                showConfigureSearchDialog(bundle);
             }
         });
 
@@ -96,51 +91,99 @@ public class ManageSearchesScreenActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "add search clicked");
-                showDialog(0);
+                showConfigureSearchDialog(new Bundle());
             }
         });
     }
 
-    protected Dialog onCreateDialog(int id)
-    {
-        final AlertDialog.Builder alert = new AlertDialog.Builder(this);
+    private void showConfigureSearchDialog(Bundle bundle) {
+        SearchEditDialogFragment fragment = new SearchEditDialogFragment();
+        fragment.setArguments(bundle);
+        fragment.show(fm, "ConfigureSearch");
+    }
 
-        LinearLayout lila1= new LinearLayout(this);
-        lila1.setOrientation(LinearLayout.VERTICAL); //1 is for vertical orientation
-        final TextView nameLabel = new TextView(this);
-        nameLabel.setText("Name");
-        final EditText nameInput = new EditText(this);
-
-        final TextView linkLabel = new TextView(this);
-        linkLabel.setText("URL");
-        final EditText linkInput = new EditText(this);
-
-        lila1.addView(nameLabel);
-        lila1.addView(nameInput);
-        lila1.addView(linkLabel);
-        lila1.addView(linkInput);
-        alert.setView(lila1);
-
-        alert.setTitle("Add Search");
-
-        alert.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                CraigSearch newSearch = new CraigSearch(nameInput.getText().toString(), linkInput.getText().toString());
-                arrayAdapter.add(newSearch);
-                //save to file
-                ConfigFiles.saveSearchesToFile(allSearches);
-                Toast.makeText(getApplicationContext(), "'" + newSearch.name + "' created", Toast.LENGTH_SHORT).show();
-                signalRefresh();
-            }                     });
-        alert.setNegativeButton("Cancel",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        dialog.cancel();    }     });
-        return alert.create();
+    private void showRemoveSearchDialog(Bundle bundle) {
+        DeleteSearchDialogFragment fragment = new DeleteSearchDialogFragment();
+        fragment.setArguments(bundle);
+        fragment.show(fm, "RemoveSearch");
     }
 
     private void signalRefresh() {
-        stopService(backgroundService);
-        startService(backgroundService);
+        if (serviceIsRunning()) {
+            Log.i(TAG, "Service was running. Restarting");
+            stopService(backgroundService);
+            startService(backgroundService);
+        }
+    }
+
+    private boolean serviceIsRunning() {
+        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (BackgroundServiceMonitor.class.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void addSearch(CraigSearch fromUser, boolean updating) {
+        CraigSearch updatingSearch = null;
+        String previousURL = null;
+
+        for (CraigSearch search : allSearches) {
+            if (search.name.equals(fromUser.name)) {
+                if (updating) {
+                    updatingSearch = search;
+                    previousURL = search.url;
+                    search.url = fromUser.url;
+                    break;
+                } else {
+                    Toast.makeText(getApplicationContext(), "'" + search.name + "' already exists", Toast.LENGTH_SHORT).show();
+
+                    Bundle bundle = new Bundle();
+                    bundle.putString("url", fromUser.url);
+                    showConfigureSearchDialog(bundle);
+                    return;
+                }
+            }
+        }
+        if (!updating) {
+            // searched through all existing services, we have a new search with a unique name: add it
+            arrayAdapter.add(fromUser);
+        }
+
+        try {
+            ConfigFiles.saveSearchesToFile(allSearches);
+            Toast.makeText(getApplicationContext(), "'" + fromUser.name + "' " + (updating ? "updated" : "created"), Toast.LENGTH_SHORT).show();
+            signalRefresh();
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to save searches: " + Log.getStackTraceString(e));
+            Toast.makeText(getApplicationContext(), "Failed to add. Try again", Toast.LENGTH_SHORT).show();
+            if (!updating) {
+                arrayAdapter.remove(fromUser);
+            } else {
+                if (updatingSearch != null && previousURL != null) {
+                    updatingSearch.url = previousURL;
+                }
+            }
+        }
+    }
+
+    public void removeSearch(String searchName) {
+        for (int i = 0; i < allSearches.size(); i++) {
+            CraigSearch craigSearch = allSearches.get(i);
+            if (craigSearch.name.equals(searchName)) {
+
+                arrayAdapter.remove(craigSearch);
+                try {
+                    ConfigFiles.saveSearchesToFile(allSearches);
+                    signalRefresh();
+                } catch (IOException e) {
+                    Log.e(TAG, "Failed to save searches: " + Log.getStackTraceString(e));
+                    arrayAdapter.insert(craigSearch, i);
+                    Toast.makeText(getApplicationContext(), "Failed to remove. Try again", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
     }
 }
