@@ -2,6 +2,7 @@ package com.example.maveric.craigslistdiffchecker.uniquenessCheckers;
 
 import android.util.Log;
 
+import com.example.maveric.craigslistdiffchecker.files.FileIO;
 import com.example.maveric.craigslistdiffchecker.files.Paths;
 import com.example.maveric.craigslistdiffchecker.service.CraigSearch;
 import com.example.maveric.craigslistdiffchecker.service.CraigslistChecker;
@@ -39,11 +40,12 @@ public class LinkCheck {
         HashSet<String> setUrls = new HashSet<>();
         ArrayList<String> listJustPulledUrls = new ArrayList<>();
 
-        HashMap<CraigSearch, ArrayList<String>> mapMasterURLList = checker.mapSearches;
-        ArrayList<String> listCachedUrls = mapMasterURLList.get(search);
+        File linkCacheFolder = new File(Paths.cachedSearchesFileLocation);
+        linkCacheFolder.getParentFile().mkdirs();
+        ArrayList<String> listCachedURLs = FileIO.readFile(linkCacheFolder);
 
-        if(listCachedUrls == null){
-            listCachedUrls = new ArrayList<>();
+        if(listCachedURLs == null){
+            listCachedURLs = new ArrayList<>();
         }
 
         Connection.Response html;
@@ -66,11 +68,6 @@ public class LinkCheck {
             setUrls.add(e.attr("abs:href"));
         }
 
-//        Log.d(TAG, "Raw links: ");
-//        for(String s : setUrls){
-//            Log.d(TAG, s);
-//        }
-
         Iterator urlsCursor = setUrls.iterator();
 
         while (urlsCursor.hasNext()) {
@@ -90,15 +87,15 @@ public class LinkCheck {
         }
 
         Log.d(TAG, "Old urls: ");
-        for (String url : listCachedUrls) {
+        for (String url : listCachedURLs) {
             Log.d(TAG, url);
         }
 
-        if(checkIfChanged(listJustPulledUrls, listCachedUrls)) {
+        if(checkIfChanged(listJustPulledUrls, listCachedURLs)) {
             Log.i(TAG, "The links have changed since I last saw them!");
 
-            if(checkIfShouldNotify(listJustPulledUrls.size(), listCachedUrls.size())){
-                String newSearchURL = findNewLink(listJustPulledUrls, listCachedUrls);
+            if(checkIfShouldNotify(listJustPulledUrls.size(), listCachedURLs.size())){
+                String newSearchURL = findNewLink(listJustPulledUrls, listCachedURLs);
                 if(newSearchURL == null){
                     Log.e(TAG, "The results of diff on the lists was greater than 1 link! Unable to spawn notification.");
                 } else {
@@ -108,9 +105,7 @@ public class LinkCheck {
                 Log.i(TAG, "It looks like a link was removed from the page. No reason to send notification.");
             }
 
-            // Just pass the search "name" in for the 3rd argument and that can be the search file to check against
-            writeLinksFile(listJustPulledUrls, Paths.folderLocationLinkCache, search.name);
-            mapMasterURLList.get(search).addAll(listJustPulledUrls);
+            writeLinksFile(listJustPulledUrls);
         } else {
             Log.i(TAG, "No changes spotted on the page.");
         }
@@ -130,19 +125,14 @@ public class LinkCheck {
             Log.d(TAG, s);
         }
 
-        ArrayList<String> linkListDifferences = new ArrayList<>(CollectionUtils.subtract(listNewSaleUrls, listSavedSaleUrls));
+        ArrayList<String> listLinkDifferences = new ArrayList<>(CollectionUtils.subtract(listNewSaleUrls, listSavedSaleUrls));
 
         Log.i(TAG, "Printing out all link differences");
-        for(String s : linkListDifferences){
+        for(String s : listLinkDifferences){
             Log.i(TAG, s);
         }
 
-        // Need to add logic that makes this noisy when multiple links show up at the same time. Just picking the first one I see for now
-//        if (linkListDifferences.size() > 1){
-//            return null;
-//        }
-
-        String newSearch = linkListDifferences.get(0);
+        String newSearch = listLinkDifferences.get(0);
 
         return newSearch;
     }
@@ -162,21 +152,19 @@ public class LinkCheck {
         return false;
     }
 
-    private static void writeLinksFile(ArrayList<String> links, String folderLocation, String fileName){
+    private static void writeLinksFile(ArrayList<String> links){
 
         Log.d(TAG, "Persisting page link state. Link count: " + links.size());
 
-        File linksFileLocation = new File(folderLocation);
+        File linksFileLocation = new File(Paths.cachedSearchesFileLocation);
 
         if(!linksFileLocation.exists()){
             Log.i(TAG, "The directory doesn't exist! Let's fix that");
-            Boolean result = linksFileLocation.mkdir();
+            Boolean result = linksFileLocation.getParentFile().mkdirs();
             Log.d(TAG, "Result of creating the directory: " + result);
         }
 
-        String absoluteFileLocation = folderLocation + File.separator + fileName + ".txt";
-
-        try (PrintWriter out = new PrintWriter(new File(absoluteFileLocation))) {
+        try (PrintWriter out = new PrintWriter(new File(Paths.cachedSearchesFileLocation))) {
             for(String url : links){
                 out.println(url);
             }

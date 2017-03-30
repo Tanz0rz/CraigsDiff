@@ -23,9 +23,9 @@ public class ConfigFiles {
 
     public static String TAG = ConfigFiles.class.getName();
 
-    public static List<CraigSearch> loadAllSavedSearches() {
+    public static ArrayList<CraigSearch> loadAllSavedSearches() {
         File savedSearchesFile = new File(Paths.saveSearchesPath);
-        savedSearchesFile.mkdirs();
+        savedSearchesFile.getParentFile().mkdirs();
 
         if (savedSearchesFile.exists()) {
             try {
@@ -35,11 +35,11 @@ public class ConfigFiles {
                 Log.e(TAG, "Failed to load saved searches: " + Log.getStackTraceString(e));
             }
         }
-        return Collections.emptyList();
+        return new ArrayList<>();
     }
 
-    private static List<CraigSearch> loadSavedSearches(File savedSearchesFile) throws IOException {
-        List<CraigSearch> searchesList = new ArrayList<>();
+    private static ArrayList<CraigSearch> loadSavedSearches(File savedSearchesFile) throws IOException {
+        ArrayList<CraigSearch> searchesList = new ArrayList<>();
         BufferedReader bufferedReader = new BufferedReader(new FileReader(savedSearchesFile));
         JsonReader reader = new JsonReader(bufferedReader);
         if (reader.hasNext()) {
@@ -62,7 +62,7 @@ public class ConfigFiles {
 
     public static void saveSearchesToFile(List<CraigSearch> searchesToSave) throws IOException {
         File savedSearchesFile = new File(Paths.saveSearchesPath);
-        savedSearchesFile.mkdirs();
+        savedSearchesFile.getParentFile().mkdirs();
 
         writeToFile(searchesToSave);
     }

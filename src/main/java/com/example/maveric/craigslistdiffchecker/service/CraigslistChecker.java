@@ -31,7 +31,7 @@ public class CraigslistChecker extends AsyncTask<URL, String, Boolean> {
 
     public static final String TAG = "CraigslistChecker";
 
-    public HashMap<CraigSearch, ArrayList<String>> mapSearches;
+    public ArrayList<CraigSearch> listSearches;
 
     public BackgroundServiceMonitor parentActivity;
 
@@ -80,7 +80,7 @@ public class CraigslistChecker extends AsyncTask<URL, String, Boolean> {
     public void checkCraigslist() {
 
         while (!isCancelled()) {
-            for (CraigSearch search : mapSearches.keySet()) {
+            for (CraigSearch search : listSearches) {
                 Sleep.waitThenContinueShort();
                 LinkCheck.CheckSaleLinks(this, search);
             }
@@ -93,60 +93,7 @@ public class CraigslistChecker extends AsyncTask<URL, String, Boolean> {
     }
 
     public void init() {
-        mapSearches = new HashMap<>();
-        reloadState();
-    }
-
-    public void reloadState(){
-
         Log.d(TAG, "Loading application state!");
-
-        List<CraigSearch> savedSearches = ConfigFiles.loadAllSavedSearches();
-
-        File linkCacheFolder = new File(Paths.folderLocationLinkCache);
-        linkCacheFolder.mkdirs();
-
-        // try to find cache files for any searches we have saved and load them
-        if (savedSearches.size() > 0) {
-            for (CraigSearch savedSearch : savedSearches) {
-                mapSearches.put(savedSearch, new ArrayList<String>());
-                boolean cacheFileFound = false;
-                for (final File cacheFile : linkCacheFolder.listFiles()) {
-                    if ((savedSearch.name + ".txt").equals(cacheFile.getName())) {
-                        Log.d(TAG, "Found cache file for saved search: " + cacheFile.getName());
-                        mapSearches.get(savedSearch).addAll(readFile(cacheFile));
-                        cacheFileFound = true;
-                        break;
-                    }
-                }
-                if (!cacheFileFound) {
-                    Log.d(TAG, "No cache file found for: " + savedSearch.name);
-                }
-            }
-        }
-    }
-
-    public List<String> readFile(File fileToRead){
-
-        Scanner scanner = null;
-        ArrayList<String> urls = new ArrayList<>();
-
-        try {
-
-            scanner = new Scanner(fileToRead);
-            while(scanner.hasNext()) {
-                urls.add(scanner.nextLine().trim());
-            }
-        } catch (FileNotFoundException e) {
-            Log.e(TAG, "Could not find file! We will just create it when we save.");
-        } catch (Exception e) {
-            Log.e(TAG, "Something went very wrong:");
-            e.printStackTrace();
-        } finally {
-            if (scanner != null){
-                scanner.close();
-            }
-        }
-        return urls;
+        listSearches = ConfigFiles.loadAllSavedSearches();
     }
 }
