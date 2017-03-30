@@ -9,7 +9,7 @@ public class Sleep {
 
     private static final String TAG = "Sleep";
 
-    static int CHECK_INTERVAL = 60000;
+    static int CHECK_INTERVAL = 120000;
 
     public static void waitThenContinueLong(){
 
