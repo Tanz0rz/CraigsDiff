@@ -11,7 +11,7 @@ public class Sleep {
 
     static int CHECK_INTERVAL = 120000;
 
-    public static void waitThenContinueLong(){
+    public static void waitThenContinueLong() throws InterruptedException {
 
         double baseSleep = CHECK_INTERVAL;
         double randomVariance = CHECK_INTERVAL;
@@ -20,14 +20,10 @@ public class Sleep {
 
         Log.i(TAG, "Sleeping for " + baseSleep + " milliseconds total!");
 
-        try {
-            Thread.sleep((long) baseSleep);
-        } catch (InterruptedException e) {
-            Log.d(TAG, "Sleep was interrupted! This should be the result of stopping the service through the UI");
-        }
+        Thread.sleep((long) baseSleep);
     }
 
-    public static void waitThenContinueShort(){
+    public static void waitThenContinueShort() throws InterruptedException {
 
         double baseSleep = (double) CHECK_INTERVAL / 10d;
         double randomVariance = (double) CHECK_INTERVAL / 10d;
@@ -36,10 +32,6 @@ public class Sleep {
 
         Log.i(TAG, "Sleeping for " + baseSleep + " milliseconds total!");
 
-        try {
-            Thread.sleep((long) baseSleep);
-        } catch (InterruptedException e) {
-            Log.d(TAG, "Sleep was interrupted! This should be the result of stopping the service through the UI");
-        }
+        Thread.sleep((long) baseSleep);
     }
 }

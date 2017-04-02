@@ -12,16 +12,15 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,8 +36,8 @@ public class LinkCheck {
         Log.i(TAG, "RUNNING SEARCH NAMED: " + search.name);
         Log.d(TAG, "Search url: " + search.url);
 
-        HashSet<String> setUrls = new HashSet<>();
-        ArrayList<String> listJustPulledUrls = new ArrayList<>();
+        ArrayList<CraigslistAd> listCraigslistAds = new ArrayList<>();
+        ArrayList<CraigslistAd> listNewCraigslistAds = new ArrayList<>();
 
         File linkCacheFolder = new File(Paths.cachedSearchesFileLocation);
         linkCacheFolder.getParentFile().mkdirs();
@@ -65,58 +64,38 @@ public class LinkCheck {
         Elements links = document.select("a");
 
         for (Element e : links) {
-            setUrls.add(e.attr("abs:href"));
+            if (e.childNodes().size() == 1){
+                CraigslistAd craigslistAd = new CraigslistAd();
+                craigslistAd.url = e.attr("abs:href");
+                craigslistAd.title = ((TextNode) e.childNode(0)).text();
+                listCraigslistAds.add(craigslistAd);
+            }
         }
 
-        Iterator urlsCursor = setUrls.iterator();
-
-        while (urlsCursor.hasNext()) {
-
-            String url = (String) urlsCursor.next();
+        for (CraigslistAd craigslistAd : listCraigslistAds) {
 
             Pattern p = Pattern.compile(".*craigslist.org/.../[0-9]*.html");
-            Matcher m = p.matcher(url);
+            Matcher m = p.matcher(craigslistAd.url);
             if (m.matches()) {
-                listJustPulledUrls.add(url);
+                listNewCraigslistAds.add(craigslistAd);
             }
         }
 
-        Log.d(TAG, "Matching urls: ");
-        for (String url : listJustPulledUrls) {
-            Log.d(TAG, url);
-        }
-
-        Log.d(TAG, "Old urls: ");
-        for (String url : listCachedURLs) {
-            Log.d(TAG, url);
-        }
-
-        if(checkIfChanged(listJustPulledUrls, listCachedURLs)) {
-            Log.i(TAG, "The links have changed since I last saw them!");
-
-            if(checkIfShouldNotify(listJustPulledUrls.size(), listCachedURLs.size())){
-                String newSearchURL = findNewLink(listJustPulledUrls, listCachedURLs);
-                if(newSearchURL == null){
-                    Log.e(TAG, "The results of diff on the lists was greater than 1 link! Unable to spawn notification.");
-                } else {
-                    checker.callPublishProgress(search.name, newSearchURL);
-                }
-            } else {
-                Log.i(TAG, "It looks like a link was removed from the page. No reason to send notification.");
-            }
-
-            writeLinksFile(listJustPulledUrls);
+        CraigslistAd newAd = findNewLink(listNewCraigslistAds, listCachedURLs);
+        if(newAd == null) {
+            Log.e(TAG, "There are no new links on the page");
         } else {
-            Log.i(TAG, "No changes spotted on the page.");
+            checker.callPublishProgress(newAd.title, newAd.url);
+            writeLinksFile(newAd);
         }
     }
 
-    private static String findNewLink(ArrayList<String> listNewSaleUrls, ArrayList<String> listSavedSaleUrls) {
+    private static CraigslistAd findNewLink(ArrayList<CraigslistAd> listNewCriagslistAds, ArrayList<String> listSavedSaleUrls) {
 
         Log.d(TAG, "List of new links:");
 
-        for(String s : listNewSaleUrls){
-            Log.d(TAG, s);
+        for(CraigslistAd ad : listNewCriagslistAds){
+            Log.d(TAG, ad.url);
         }
 
         Log.d(TAG, "List of old links:");
@@ -125,50 +104,49 @@ public class LinkCheck {
             Log.d(TAG, s);
         }
 
-        ArrayList<String> listLinkDifferences = new ArrayList<>(CollectionUtils.subtract(listNewSaleUrls, listSavedSaleUrls));
+        ArrayList<CraigslistAd> listUnseenCraigslistAds = new ArrayList<>(listNewCriagslistAds);
+
+        for (CraigslistAd ad : listNewCriagslistAds) {
+            for (String savedUrl : listSavedSaleUrls) {
+                if (ad.url.equals(savedUrl)) {
+                    listUnseenCraigslistAds.remove(ad);
+                    continue;
+                }
+            }
+        }
 
         Log.i(TAG, "Printing out all link differences");
-        for(String s : listLinkDifferences){
-            Log.i(TAG, s);
+        for(CraigslistAd ad : listUnseenCraigslistAds){
+            Log.i(TAG, ad.url);
         }
 
-        String newSearch = listLinkDifferences.get(0);
-
-        return newSearch;
-    }
-
-    private static boolean checkIfShouldNotify(int newListSize, int savedListSize) {
-        if(newListSize > savedListSize){
-            return true;
+        if (listUnseenCraigslistAds.size() == 0) {
+            return null;
         }
-        return false;
+
+        // Just grab the first new link for now
+        CraigslistAd newAd = listUnseenCraigslistAds.get(0);
+
+        return newAd;
     }
 
-    private static boolean checkIfChanged(ArrayList<String> currentListUrls, ArrayList<String> savedListUrls) {
+    private static void writeLinksFile(CraigslistAd ad){
 
-        if(currentListUrls.size() != savedListUrls.size()){
-            return true;
-        }
-        return false;
-    }
-
-    private static void writeLinksFile(ArrayList<String> links){
-
-        Log.d(TAG, "Persisting page link state. Link count: " + links.size());
+        Log.d(TAG, "Persisting a new URL: " + ad.url);
 
         File linksFileLocation = new File(Paths.cachedSearchesFileLocation);
 
         if(!linksFileLocation.exists()){
             Log.i(TAG, "The directory doesn't exist! Let's fix that");
-            Boolean result = linksFileLocation.getParentFile().mkdirs();
-            Log.d(TAG, "Result of creating the directory: " + result);
+            linksFileLocation.getParentFile().mkdirs();
         }
 
-        try (PrintWriter out = new PrintWriter(new File(Paths.cachedSearchesFileLocation))) {
-            for(String url : links){
-                out.println(url);
-            }
-        } catch (FileNotFoundException e) {
+        try(FileWriter fw = new FileWriter(Paths.cachedSearchesFileLocation, true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter out = new PrintWriter(bw))
+        {
+            out.println(ad.url);
+        } catch (IOException e) {
             Log.e(TAG, "Unable to write file");
             e.printStackTrace();
         }
