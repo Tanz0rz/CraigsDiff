@@ -32,8 +32,8 @@ public class BackgroundServiceMonitor extends Service {
 
     @Override
     public void onDestroy(){
-        super.onDestroy();
         craigslistChecker.cancel(true);
+        super.onDestroy();
         Toast.makeText(this, "Service stopped!", Toast.LENGTH_LONG).show();
     }
 

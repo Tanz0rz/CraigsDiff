@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         applicationId "com.example.maveric.craigslistdiffchecker"
@@ -26,7 +26,7 @@ dependencies {
     // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
     compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.2'
     // https://mvnrepository.com/artifact/org.jsoup/jsoup
-    compile group: 'org.jsoup', name: 'jsoup', version: '1.9.2'
+    compile group: 'org.jsoup', name: 'jsoup', version: '1.10.2'
     // https://mvnrepository.com/artifact/commons-collections/commons-collections
     compile group: 'commons-collections', name: 'commons-collections', version: '3.2.2'
 
