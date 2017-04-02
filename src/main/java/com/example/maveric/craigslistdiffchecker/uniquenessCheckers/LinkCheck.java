@@ -7,7 +7,6 @@ import com.example.maveric.craigslistdiffchecker.files.Paths;
 import com.example.maveric.craigslistdiffchecker.service.CraigSearch;
 import com.example.maveric.craigslistdiffchecker.service.CraigslistChecker;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -36,16 +35,48 @@ public class LinkCheck {
         Log.i(TAG, "RUNNING SEARCH NAMED: " + search.name);
         Log.d(TAG, "Search url: " + search.url);
 
-        ArrayList<CraigslistAd> listCraigslistAds = new ArrayList<>();
-        ArrayList<CraigslistAd> listNewCraigslistAds = new ArrayList<>();
+        ArrayList<CraigslistAd> listCraigslistPageLinks;
+        ArrayList<CraigslistAd> listCraigslistAds;
 
         File linkCacheFolder = new File(Paths.cachedSearchesFileLocation);
         linkCacheFolder.getParentFile().mkdirs();
-        ArrayList<String> listCachedURLs = FileIO.readFile(linkCacheFolder);
+        ArrayList<String> listOldSearches = FileIO.readFile(linkCacheFolder);
 
-        if(listCachedURLs == null){
-            listCachedURLs = new ArrayList<>();
+        if(listOldSearches == null){
+            listOldSearches = new ArrayList<>();
         }
+
+        listCraigslistPageLinks = readAllLinksFromPageSource(search);
+
+        listCraigslistAds = findAdLinks(listCraigslistPageLinks);
+
+        CraigslistAd newAd = findNewLink(listCraigslistAds, listOldSearches);
+        if(newAd == null) {
+            Log.e(TAG, "There are no new links on the page");
+        } else {
+            checker.callPublishProgress(newAd.title, newAd.url, search.name);
+            FileIO.writeLinksFile(newAd);
+        }
+    }
+
+    static private ArrayList<CraigslistAd> findAdLinks(ArrayList<CraigslistAd> listAllPageLinks) {
+
+        ArrayList<CraigslistAd> listCraigslistAds = new ArrayList<>();
+
+        for (CraigslistAd craigslistAd : listAllPageLinks) {
+
+            Pattern p = Pattern.compile(".*craigslist.org/.../[0-9]*.html");
+            Matcher m = p.matcher(craigslistAd.url);
+            if (m.matches()) {
+                listCraigslistAds.add(craigslistAd);
+            }
+        }
+
+        return listCraigslistAds;
+
+    }
+
+    static private ArrayList<CraigslistAd> readAllLinksFromPageSource(CraigSearch search) {
 
         Connection.Response html;
         Document document = null;
@@ -58,36 +89,23 @@ public class LinkCheck {
         } catch (IOException e) {
             Log.e(TAG, "Unable to contact the website!!!");
             e.printStackTrace();
-            return;
+            return null;
         }
 
         Elements links = document.select("a");
+
+        ArrayList<CraigslistAd> listLinksFoundOnPage = new ArrayList<>();
 
         for (Element e : links) {
             if (e.childNodes().size() == 1){
                 CraigslistAd craigslistAd = new CraigslistAd();
                 craigslistAd.url = e.attr("abs:href");
                 craigslistAd.title = ((TextNode) e.childNode(0)).text();
-                listCraigslistAds.add(craigslistAd);
+                listLinksFoundOnPage.add(craigslistAd);
             }
         }
 
-        for (CraigslistAd craigslistAd : listCraigslistAds) {
-
-            Pattern p = Pattern.compile(".*craigslist.org/.../[0-9]*.html");
-            Matcher m = p.matcher(craigslistAd.url);
-            if (m.matches()) {
-                listNewCraigslistAds.add(craigslistAd);
-            }
-        }
-
-        CraigslistAd newAd = findNewLink(listNewCraigslistAds, listCachedURLs);
-        if(newAd == null) {
-            Log.e(TAG, "There are no new links on the page");
-        } else {
-            checker.callPublishProgress(newAd.title, newAd.url);
-            writeLinksFile(newAd);
-        }
+        return listLinksFoundOnPage;
     }
 
     private static CraigslistAd findNewLink(ArrayList<CraigslistAd> listNewCriagslistAds, ArrayList<String> listSavedSaleUrls) {
@@ -128,27 +146,5 @@ public class LinkCheck {
         CraigslistAd newAd = listUnseenCraigslistAds.get(0);
 
         return newAd;
-    }
-
-    private static void writeLinksFile(CraigslistAd ad){
-
-        Log.d(TAG, "Persisting a new URL: " + ad.url);
-
-        File linksFileLocation = new File(Paths.cachedSearchesFileLocation);
-
-        if(!linksFileLocation.exists()){
-            Log.i(TAG, "The directory doesn't exist! Let's fix that");
-            linksFileLocation.getParentFile().mkdirs();
-        }
-
-        try(FileWriter fw = new FileWriter(Paths.cachedSearchesFileLocation, true);
-            BufferedWriter bw = new BufferedWriter(fw);
-            PrintWriter out = new PrintWriter(bw))
-        {
-            out.println(ad.url);
-        } catch (IOException e) {
-            Log.e(TAG, "Unable to write file");
-            e.printStackTrace();
-        }
     }
 }

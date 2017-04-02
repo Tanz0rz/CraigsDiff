@@ -42,11 +42,21 @@ public class CraigslistChecker extends AsyncTask<URL, String, Boolean> {
         parentActivity = backgroundServiceMonitor;
     }
 
+    public void init() {
+        Log.d(TAG, "Loading application state!");
+        listSearches = ConfigFiles.loadAllSavedSearches();
+        Log.d(TAG, "Finished loading application state!");
+    }
+
     @Override
     protected Boolean doInBackground(URL... params) {
 
         checkCraigslist();
         return true;
+    }
+
+    public void callPublishProgress(String... searchData) {
+        publishProgress(searchData);
     }
 
     protected void onProgressUpdate(String... searchData){
@@ -55,6 +65,7 @@ public class CraigslistChecker extends AsyncTask<URL, String, Boolean> {
 
         String searchName = searchData[0];
         String searchURL = searchData[1];
+        String searchSearchName = searchData[2];
 
         Log.d(TAG, "Notification will take you to " + searchURL);
 
@@ -76,7 +87,7 @@ public class CraigslistChecker extends AsyncTask<URL, String, Boolean> {
         Notification notification = new Notification.Builder(parentActivity)
                 .setTicker(searchName)
                 .setContentTitle(searchName)
-                .setContentText("Click this to go directly there")
+                .setContentText(searchSearchName)
                 .setAutoCancel(true)
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setContentIntent(pIntent).build();
@@ -107,15 +118,5 @@ public class CraigslistChecker extends AsyncTask<URL, String, Boolean> {
                 return;
             }
         }
-    }
-
-    public void callPublishProgress(String... searchData) {
-        publishProgress(searchData);
-    }
-
-    public void init() {
-        Log.d(TAG, "Loading application state!");
-        listSearches = ConfigFiles.loadAllSavedSearches();
-        Log.d(TAG, "Finished loading application state!");
     }
 }
