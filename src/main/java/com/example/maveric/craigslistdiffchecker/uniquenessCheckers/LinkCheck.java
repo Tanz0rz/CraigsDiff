@@ -14,11 +14,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -52,7 +49,7 @@ public class LinkCheck {
 
         CraigslistAd newAd = findNewLink(listCraigslistAds, listOldSearches);
         if(newAd == null) {
-            Log.e(TAG, "There are no new links on the page");
+            Log.i(TAG, "There are no new links on the page");
         } else {
             checker.callPublishProgress(newAd.title, newAd.url, search.name);
             FileIO.writeLinksFile(newAd);

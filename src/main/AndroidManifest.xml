@@ -23,12 +23,16 @@
         <activity android:name=".ui.ManageSearchesScreenActivity"></activity>
 
         <service
-            android:name=".service.BackgroundServiceMonitor"
+            android:name=".service.CraigsDiffBackgroundService"
             android:exported="false"/>
 
-        <!-- Declaring broadcast receiver for BOOT_COMPLETED event. -->
-        <receiver android:name=".service.MyReceiver" android:enabled="true" android:exported="false">
+        <receiver
+            android:name="com.example.maveric.craigslistdiffchecker.shadon.example.maveric.craigslistdiffchecker.service.CraigsDiffServiceRestarterBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:label="StartServiceAtBootTimeAndRestartServiceWhenStopped">
             <intent-filter>
+                <action android:name="com.example.maveric.craigslistdiffchecker.RestartSensor"/>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>

@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".ui.CraigsDiff">
+    tools:context="com.example.maveric.craigslistdiffchecker.ui.CraigsDiff">
 
     <TextView
         android:layout_width="wrap_content"
@@ -40,4 +40,34 @@
         android:layout_below="@+id/btnStopService"
         android:layout_centerHorizontal="true"
         android:textSize="20dp" />
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:paddingLeft="4.0dip"
+        android:paddingTop="5.0dip"
+        android:paddingRight="4.0dip"
+        android:paddingBottom="1.0dip"
+        android:layout_width="fill_parent" android:layout_height="wrap_content"
+        android:layout_below="@+id/btnManageSearches">
+
+        <TextView
+            android:id="@+id/textViewServiceStatusLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:textAlignment="viewEnd"
+            android:textSize="25sp"
+            android:text="Service:  " />
+
+        <TextView
+            android:id="@+id/textViewServiceStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:textSize="25sp"
+            android:text="null" />
+
+    </LinearLayout>
+
 </RelativeLayout>

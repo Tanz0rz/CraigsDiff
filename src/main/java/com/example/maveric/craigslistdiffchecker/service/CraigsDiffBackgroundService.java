@@ -4,23 +4,25 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.widget.Toast;
+import android.util.Log;
+
+import com.example.maveric.craigslistdiffchecker.ui.CraigsDiff;
 
 /**
  * Created by Maveric on 6/24/2016.
  */
-public class BackgroundServiceMonitor extends Service {
+public class CraigsDiffBackgroundService extends Service {
 
+    final String TAG = "CraigsBackgroundService";
     CraigslistChecker craigslistChecker;
 
     @Override
     public void onCreate(){
 
-        Toast.makeText(this, "Service Created!", Toast.LENGTH_SHORT).show();
+        Log.i(TAG, "Service created!");
 
         craigslistChecker = new CraigslistChecker(this);
         craigslistChecker.init();
-
         craigslistChecker.execute();
     }
 
@@ -32,9 +34,15 @@ public class BackgroundServiceMonitor extends Service {
 
     @Override
     public void onDestroy(){
-        craigslistChecker.cancel(true);
         super.onDestroy();
-        Toast.makeText(this, "Service stopped!", Toast.LENGTH_LONG).show();
+        craigslistChecker.cancel(true);
+        if (CraigsDiff.USER_STOPPED) {
+            Log.i(TAG, "Service stopped by user");
+        } else {
+            Log.i(TAG, "Service killed by Android OS");
+            Intent broadcastIntent = new Intent("com.example.maveric.craigslistdiffchecker.RestartSensor");
+            sendBroadcast(broadcastIntent);
+        }
     }
 
     @Nullable
