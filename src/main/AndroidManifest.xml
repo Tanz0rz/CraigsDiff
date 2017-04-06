@@ -27,7 +27,7 @@
             android:exported="false"/>
 
         <receiver
-            android:name="shadon.technologies.app.craigslistdiffchecker.shadon.example.maveric.craigslistdiffchecker.service.CraigsDiffServiceRestarterBroadcastReceiver"
+            android:name="shadon.technologies.app.craigslistdiffchecker.service.CraigsDiffServiceRestarterBroadcastReceiver"
             android:enabled="true"
             android:exported="true"
             android:label="StartServiceAtBootTimeAndRestartServiceWhenStopped">
