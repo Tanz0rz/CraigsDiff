@@ -1,4 +1,4 @@
-package com.example.maveric.craigslistdiffchecker.service;
+package shadon.technologies.app.craigslistdiffchecker.service;
 
 /**
  * Created by Monday on 7/31/2016.

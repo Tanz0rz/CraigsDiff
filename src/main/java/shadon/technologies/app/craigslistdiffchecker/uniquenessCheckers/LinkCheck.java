@@ -1,11 +1,11 @@
-package com.example.maveric.craigslistdiffchecker.uniquenessCheckers;
+package shadon.technologies.app.craigslistdiffchecker.uniquenessCheckers;
 
 import android.util.Log;
 
-import com.example.maveric.craigslistdiffchecker.files.FileIO;
-import com.example.maveric.craigslistdiffchecker.files.Paths;
-import com.example.maveric.craigslistdiffchecker.service.CraigSearch;
-import com.example.maveric.craigslistdiffchecker.service.CraigslistChecker;
+import shadon.technologies.app.craigslistdiffchecker.files.FileIO;
+import shadon.technologies.app.craigslistdiffchecker.files.Paths;
+import shadon.technologies.app.craigslistdiffchecker.service.CraigSearch;
+import shadon.technologies.app.craigslistdiffchecker.service.CraigslistChecker;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;

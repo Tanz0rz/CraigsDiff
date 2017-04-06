@@ -1,4 +1,4 @@
-package com.example.maveric.craigslistdiffchecker.ui;
+package shadon.technologies.app.craigslistdiffchecker.ui;
 
 import android.app.ActivityManager;
 import android.content.Context;
@@ -11,8 +11,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.maveric.craigslistdiffchecker.service.CraigsDiffBackgroundService;
-import com.example.maveric.craigslistdiffchecker.R;
+import shadon.technologies.app.craigslistdiffchecker.service.CraigsDiffBackgroundService;
+import shadon.technologies.app.craigslistdiffchecker.R;
 
 public class CraigsDiff extends AppCompatActivity {
 

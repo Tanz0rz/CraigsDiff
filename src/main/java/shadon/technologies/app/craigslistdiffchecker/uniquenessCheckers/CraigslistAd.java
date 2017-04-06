@@ -1,4 +1,4 @@
-package com.example.maveric.craigslistdiffchecker.uniquenessCheckers;
+package shadon.technologies.app.craigslistdiffchecker.uniquenessCheckers;
 
 /**
  * Created by Maveric on 4/1/2017.
