@@ -1,4 +1,4 @@
-package com.example.maveric.craigslistdiffchecker.dialog;
+package shadon.technologies.app.craigslistdiffchecker.dialog;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -8,9 +8,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-import com.example.maveric.craigslistdiffchecker.R;
-import com.example.maveric.craigslistdiffchecker.service.CraigSearch;
-import com.example.maveric.craigslistdiffchecker.ui.ManageSearchesScreenActivity;
+import shadon.technologies.app.craigslistdiffchecker.R;
+import shadon.technologies.app.craigslistdiffchecker.service.CraigSearch;
+import shadon.technologies.app.craigslistdiffchecker.ui.ManageSearchesScreenActivity;
 
 /**
  * Created by Monday on 8/6/2016.

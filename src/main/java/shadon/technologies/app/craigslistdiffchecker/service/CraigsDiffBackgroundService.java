@@ -1,4 +1,4 @@
-package com.example.maveric.craigslistdiffchecker.service;
+package shadon.technologies.app.craigslistdiffchecker.service;
 
 import android.app.Service;
 import android.content.Intent;
@@ -6,7 +6,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.example.maveric.craigslistdiffchecker.ui.CraigsDiff;
+import shadon.technologies.app.craigslistdiffchecker.ui.CraigsDiff;
 
 /**
  * Created by Maveric on 6/24/2016.
@@ -40,7 +40,7 @@ public class CraigsDiffBackgroundService extends Service {
             Log.i(TAG, "Service stopped by user");
         } else {
             Log.i(TAG, "Service killed by Android OS");
-            Intent broadcastIntent = new Intent("com.example.maveric.craigslistdiffchecker.RestartSensor");
+            Intent broadcastIntent = new Intent("shadon.technologies.app.craigslistdiffchecker.RestartSensor");
             sendBroadcast(broadcastIntent);
         }
     }

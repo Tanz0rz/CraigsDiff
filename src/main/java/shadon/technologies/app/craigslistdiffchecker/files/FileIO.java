@@ -1,8 +1,8 @@
-package com.example.maveric.craigslistdiffchecker.files;
+package shadon.technologies.app.craigslistdiffchecker.files;
 
 import android.util.Log;
 
-import com.example.maveric.craigslistdiffchecker.uniquenessCheckers.CraigslistAd;
+import shadon.technologies.app.craigslistdiffchecker.uniquenessCheckers.CraigslistAd;
 
 import java.io.BufferedWriter;
 import java.io.File;

@@ -1,4 +1,4 @@
-package com.example.maveric.craigslistdiffchecker.service;
+package shadon.technologies.app.craigslistdiffchecker.service;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

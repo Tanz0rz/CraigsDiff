@@ -1,10 +1,10 @@
-package com.example.maveric.craigslistdiffchecker.files;
+package shadon.technologies.app.craigslistdiffchecker.files;
 
 import android.util.JsonReader;
 import android.util.JsonWriter;
 import android.util.Log;
 
-import com.example.maveric.craigslistdiffchecker.service.CraigSearch;
+import shadon.technologies.app.craigslistdiffchecker.service.CraigSearch;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

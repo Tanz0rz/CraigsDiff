@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.maveric.craigslistdiffchecker.ui.CraigsDiff">
+    tools:context="shadon.technologies.app.craigslistdiffchecker.shadon.example.maveric.craigslistdiffchecker.ui.CraigsDiff">
 
     <TextView
         android:layout_width="wrap_content"

@@ -1,4 +1,4 @@
-package com.example.maveric.craigslistdiffchecker.ui;
+package shadon.technologies.app.craigslistdiffchecker.ui;
 
 import android.app.ActivityManager;
 import android.app.FragmentManager;
@@ -13,12 +13,12 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.maveric.craigslistdiffchecker.R;
-import com.example.maveric.craigslistdiffchecker.dialog.DeleteSearchDialogFragment;
-import com.example.maveric.craigslistdiffchecker.dialog.SearchEditDialogFragment;
-import com.example.maveric.craigslistdiffchecker.files.ConfigFiles;
-import com.example.maveric.craigslistdiffchecker.service.CraigsDiffBackgroundService;
-import com.example.maveric.craigslistdiffchecker.service.CraigSearch;
+import shadon.technologies.app.craigslistdiffchecker.R;
+import shadon.technologies.app.craigslistdiffchecker.dialog.DeleteSearchDialogFragment;
+import shadon.technologies.app.craigslistdiffchecker.dialog.SearchEditDialogFragment;
+import shadon.technologies.app.craigslistdiffchecker.files.ConfigFiles;
+import shadon.technologies.app.craigslistdiffchecker.service.CraigsDiffBackgroundService;
+import shadon.technologies.app.craigslistdiffchecker.service.CraigSearch;
 
 import java.io.IOException;
 import java.util.List;

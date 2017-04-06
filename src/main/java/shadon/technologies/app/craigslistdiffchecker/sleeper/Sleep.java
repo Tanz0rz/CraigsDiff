@@ -1,4 +1,4 @@
-package com.example.maveric.craigslistdiffchecker.sleeper;
+package shadon.technologies.app.craigslistdiffchecker.sleeper;
 
 import android.util.Log;
 
