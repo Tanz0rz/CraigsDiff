@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.maveric.craigslistdiffchecker">
+    package="shadon.technologies.app.craigslistdiffchecker">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -13,22 +13,26 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.CraigsDiff">
+        <activity android:name="shadon.technologies.app.craigslistdiffchecker.ui.CraigsDiff">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.ManageSearchesScreenActivity"></activity>
+        <activity android:name="shadon.technologies.app.craigslistdiffchecker.ui.ManageSearchesScreenActivity"></activity>
 
         <service
-            android:name=".service.BackgroundServiceMonitor"
+            android:name="shadon.technologies.app.craigslistdiffchecker.service.CraigsDiffBackgroundService"
             android:exported="false"/>
 
-        <!-- Declaring broadcast receiver for BOOT_COMPLETED event. -->
-        <receiver android:name=".service.MyReceiver" android:enabled="true" android:exported="false">
+        <receiver
+            android:name="shadon.technologies.app.craigslistdiffchecker.shadon.example.maveric.craigslistdiffchecker.service.CraigsDiffServiceRestarterBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:label="StartServiceAtBootTimeAndRestartServiceWhenStopped">
             <intent-filter>
+                <action android:name="shadon.technologies.app.craigslistdiffchecker.RestartSensor"/>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>

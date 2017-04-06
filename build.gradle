@@ -5,7 +5,7 @@ android {
     buildToolsVersion '25.0.0'
 
     defaultConfig {
-        applicationId "com.example.maveric.craigslistdiffchecker"
+        applicationId "shadon.technologies.app.craigslistdiffchecker"
         minSdkVersion 19
         targetSdkVersion 23
         versionCode 1

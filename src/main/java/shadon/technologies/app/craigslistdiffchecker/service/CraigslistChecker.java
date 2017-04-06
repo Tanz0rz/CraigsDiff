@@ -1,4 +1,4 @@
-package com.example.maveric.craigslistdiffchecker.service;
+package shadon.technologies.app.craigslistdiffchecker.service;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -11,19 +11,13 @@ import android.os.AsyncTask;
 import android.os.Vibrator;
 import android.util.Log;
 
-import com.example.maveric.craigslistdiffchecker.R;
-import com.example.maveric.craigslistdiffchecker.files.ConfigFiles;
-import com.example.maveric.craigslistdiffchecker.files.Paths;
-import com.example.maveric.craigslistdiffchecker.sleeper.Sleep;
-import com.example.maveric.craigslistdiffchecker.uniquenessCheckers.LinkCheck;
+import shadon.technologies.app.craigslistdiffchecker.R;
+import shadon.technologies.app.craigslistdiffchecker.files.ConfigFiles;
+import shadon.technologies.app.craigslistdiffchecker.sleeper.Sleep;
+import shadon.technologies.app.craigslistdiffchecker.uniquenessCheckers.LinkCheck;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
 
 import static android.media.AudioManager.RINGER_MODE_SILENT;
 
@@ -36,10 +30,10 @@ public class CraigslistChecker extends AsyncTask<URL, String, Boolean> {
 
     public ArrayList<CraigSearch> listSearches;
 
-    public BackgroundServiceMonitor parentActivity;
+    public CraigsDiffBackgroundService parentActivity;
 
-    public CraigslistChecker(BackgroundServiceMonitor backgroundServiceMonitor){
-        parentActivity = backgroundServiceMonitor;
+    public CraigslistChecker(CraigsDiffBackgroundService craigsDiffBackgroundService){
+        parentActivity = craigsDiffBackgroundService;
     }
 
     public void init() {

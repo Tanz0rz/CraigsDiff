@@ -1,4 +1,4 @@
-package com.example.maveric.craigslistdiffchecker.files;
+package shadon.technologies.app.craigslistdiffchecker.files;
 
 import android.os.Environment;
 
