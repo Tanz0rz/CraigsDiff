@@ -17,8 +17,8 @@ import shadon.technologies.app.craigslistdiffchecker.R;
 import shadon.technologies.app.craigslistdiffchecker.dialog.DeleteSearchDialogFragment;
 import shadon.technologies.app.craigslistdiffchecker.dialog.SearchEditDialogFragment;
 import shadon.technologies.app.craigslistdiffchecker.files.ConfigFiles;
-import shadon.technologies.app.craigslistdiffchecker.service.CraigsDiffBackgroundService;
-import shadon.technologies.app.craigslistdiffchecker.craigsObjects.CraigsListSavedSearch;
+import shadon.technologies.app.craigslistdiffchecker.service.AndroidBackgroundService;
+import shadon.technologies.app.craigslistdiffchecker.craigsObjects.SavedSearch;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,8 +31,8 @@ public class ManageSearchesScreenActivity extends AppCompatActivity {
     public static String TAG = "ManageSearch";
 
     ListView lstSearches;
-    List<CraigsListSavedSearch> allSearches;
-    ArrayAdapter<CraigsListSavedSearch> arrayAdapter;
+    List<SavedSearch> allSearches;
+    ArrayAdapter<SavedSearch> arrayAdapter;
 
     Button btnAddSearch;
 
@@ -47,7 +47,7 @@ public class ManageSearchesScreenActivity extends AppCompatActivity {
         fm = getFragmentManager();
 
 
-        backgroundService = new Intent(getBaseContext(), CraigsDiffBackgroundService.class);
+        backgroundService = new Intent(getBaseContext(), AndroidBackgroundService.class);
 
         lstSearches = (ListView) findViewById(R.id.lstSearches);
 
@@ -60,7 +60,7 @@ public class ManageSearchesScreenActivity extends AppCompatActivity {
         lstSearches.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int position, long id) {
-                CraigsListSavedSearch clickedSearchItem = arrayAdapter.getItem(position);
+                SavedSearch clickedSearchItem = arrayAdapter.getItem(position);
                 Bundle bundle = new Bundle();
                 bundle.putString("name", clickedSearchItem.name);
                 showRemoveSearchDialog(bundle);
@@ -71,7 +71,7 @@ public class ManageSearchesScreenActivity extends AppCompatActivity {
         lstSearches.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, final int position, long id) {
-                CraigsListSavedSearch clickedSearchItem = arrayAdapter.getItem(position);
+                SavedSearch clickedSearchItem = arrayAdapter.getItem(position);
                 Bundle bundle = new Bundle();
                 bundle.putString("name", clickedSearchItem.name);
                 bundle.putString("url", clickedSearchItem.url);
@@ -113,18 +113,18 @@ public class ManageSearchesScreenActivity extends AppCompatActivity {
     private boolean serviceIsRunning() {
         ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (CraigsDiffBackgroundService.class.getName().equals(service.service.getClassName())) {
+            if (AndroidBackgroundService.class.getName().equals(service.service.getClassName())) {
                 return true;
             }
         }
         return false;
     }
 
-    public void addSearch(CraigsListSavedSearch fromUser, boolean updating) {
-        CraigsListSavedSearch updatingSearch = null;
+    public void addSearch(SavedSearch fromUser, boolean updating) {
+        SavedSearch updatingSearch = null;
         String previousURL = null;
 
-        for (CraigsListSavedSearch search : allSearches) {
+        for (SavedSearch search : allSearches) {
             if (search.name.equals(fromUser.name)) {
                 if (updating) {
                     updatingSearch = search;
@@ -165,16 +165,16 @@ public class ManageSearchesScreenActivity extends AppCompatActivity {
 
     public void removeSearch(String searchName) {
         for (int i = 0; i < allSearches.size(); i++) {
-            CraigsListSavedSearch craigsListSavedSearch = allSearches.get(i);
-            if (craigsListSavedSearch.name.equals(searchName)) {
+            SavedSearch savedSearch = allSearches.get(i);
+            if (savedSearch.name.equals(searchName)) {
 
-                arrayAdapter.remove(craigsListSavedSearch);
+                arrayAdapter.remove(savedSearch);
                 try {
                     ConfigFiles.saveSearchesToFile(allSearches);
                     signalRefresh();
                 } catch (IOException e) {
                     Log.e(TAG, "Failed to save searches: " + Log.getStackTraceString(e));
-                    arrayAdapter.insert(craigsListSavedSearch, i);
+                    arrayAdapter.insert(savedSearch, i);
                     Toast.makeText(getApplicationContext(), "Failed to remove. Try again", Toast.LENGTH_SHORT).show();
                 }
             }

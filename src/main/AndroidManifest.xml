@@ -24,11 +24,11 @@
         <activity android:name="shadon.technologies.app.craigslistdiffchecker.ui.ManageSearchesScreenActivity"></activity>
 
         <service
-            android:name="shadon.technologies.app.craigslistdiffchecker.service.CraigsDiffBackgroundService"
+            android:name="shadon.technologies.app.craigslistdiffchecker.service.AndroidBackgroundService"
             android:exported="false"/>
 
         <receiver
-            android:name="shadon.technologies.app.craigslistdiffchecker.service.CraigsDiffServiceRestarterBroadcastReceiver"
+            android:name="shadon.technologies.app.craigslistdiffchecker.service.AndroidServiceRestarterBroadcastReceiver"
             android:enabled="true"
             android:exported="true"
             android:label="StartServiceAtBootTimeAndRestartServiceWhenStopped">

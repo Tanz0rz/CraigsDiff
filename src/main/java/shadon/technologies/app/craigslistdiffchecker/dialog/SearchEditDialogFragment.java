@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import shadon.technologies.app.craigslistdiffchecker.R;
-import shadon.technologies.app.craigslistdiffchecker.craigsObjects.CraigsListSavedSearch;
+import shadon.technologies.app.craigslistdiffchecker.craigsObjects.SavedSearch;
 import shadon.technologies.app.craigslistdiffchecker.ui.ManageSearchesScreenActivity;
 
 /**
@@ -45,7 +45,7 @@ public class SearchEditDialogFragment extends DialogFragment {
                                 String url = ((EditText) getDialog().findViewById(R.id.text_urlInput)).getText().toString();
 
                                 // if we were given a name, this is an update
-                                ((ManageSearchesScreenActivity) getActivity()).addSearch(new CraigsListSavedSearch(name, url), getArguments().containsKey("name"));
+                                ((ManageSearchesScreenActivity) getActivity()).addSearch(new SavedSearch(name, url), getArguments().containsKey("name"));
                             }
                         })
                 .setNegativeButton("Cancel",

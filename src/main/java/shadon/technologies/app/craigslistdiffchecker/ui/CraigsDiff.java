@@ -1,7 +1,6 @@
 package shadon.technologies.app.craigslistdiffchecker.ui;
 
 import android.app.ActivityManager;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -11,12 +10,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import shadon.technologies.app.craigslistdiffchecker.service.CraigsDiffBackgroundService;
+import shadon.technologies.app.craigslistdiffchecker.service.AndroidBackgroundService;
 import shadon.technologies.app.craigslistdiffchecker.R;
 
 public class CraigsDiff extends AppCompatActivity {
 
     //todo The flag to determine if the user wants the service to actually die is a sloppy global. Find out how to do this in a cleaner way.
+    //todo Right now the LinkCheck class only returns one new ad at a time. This can be changed to return and notify on a list.
 
     public static final String TAG = "CraigsDiff";
     public static boolean USER_STOPPED = false;
@@ -38,7 +38,7 @@ public class CraigsDiff extends AppCompatActivity {
 
         textViewServiceStatus = (TextView) findViewById(R.id.textViewServiceStatus);
 
-        backgroundService = new Intent(getBaseContext(), CraigsDiffBackgroundService.class);
+        backgroundService = new Intent(getBaseContext(), AndroidBackgroundService.class);
 
         btnStartService.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,24 +67,24 @@ public class CraigsDiff extends AppCompatActivity {
         });
     }
 
-    private boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private void updateServiceStatusText() {
-        if (isMyServiceRunning(CraigsDiffBackgroundService.class)) {
+        if (serviceIsRunning()) {
             textViewServiceStatus.setText("RUNNING");
             textViewServiceStatus.setTextColor(Color.GREEN);
         } else {
             textViewServiceStatus.setText("NOT RUNNING");
             textViewServiceStatus.setTextColor(Color.RED);
         }
+    }
+
+    private boolean serviceIsRunning() {
+        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (AndroidBackgroundService.class.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
