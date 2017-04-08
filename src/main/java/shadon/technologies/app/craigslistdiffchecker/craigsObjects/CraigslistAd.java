@@ -1,4 +1,4 @@
-package shadon.technologies.app.craigslistdiffchecker.uniquenessCheckers;
+package shadon.technologies.app.craigslistdiffchecker.craigsObjects;
 
 /**
  * Created by Maveric on 4/1/2017.

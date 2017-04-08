@@ -2,13 +2,15 @@ package shadon.technologies.app.craigslistdiffchecker.files;
 
 import android.util.Log;
 
-import shadon.technologies.app.craigslistdiffchecker.uniquenessCheckers.CraigslistAd;
+import shadon.technologies.app.craigslistdiffchecker.craigsObjects.CraigslistAd;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -65,5 +67,34 @@ public class FileIO {
             Log.e(TAG, "Unable to write file");
             e.printStackTrace();
         }
+    }
+
+    public static void writeLogcatLogsToFile() {
+
+            Log.i(TAG, "Writing logcat files to disk");
+
+            String debugLogFilePath = Paths.build(Paths.logFolderLocation, "logcatOutput-" + String.valueOf(System.currentTimeMillis()) + ".txt");
+
+            File debugLogFileLocation = new File(debugLogFilePath);
+            debugLogFileLocation.getParentFile().mkdirs();
+
+            try(FileWriter fw = new FileWriter(debugLogFilePath, true);
+                BufferedWriter bw = new BufferedWriter(fw);
+                PrintWriter out = new PrintWriter(bw))
+            {
+
+                Process process = Runtime.getRuntime().exec("logcat -d");
+                BufferedReader bufferedReader = new BufferedReader(
+                        new InputStreamReader(process.getInputStream()));
+
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    out.println(line);
+                }
+
+            } catch (IOException e) {
+                Log.e(TAG, "Unable to write file");
+                e.printStackTrace();
+            }
     }
 }

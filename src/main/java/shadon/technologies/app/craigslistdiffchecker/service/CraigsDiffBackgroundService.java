@@ -6,6 +6,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import shadon.technologies.app.craigslistdiffchecker.files.FileIO;
 import shadon.technologies.app.craigslistdiffchecker.ui.CraigsDiff;
 
 /**
@@ -43,6 +44,8 @@ public class CraigsDiffBackgroundService extends Service {
             Intent broadcastIntent = new Intent("shadon.technologies.app.craigslistdiffchecker.RestartSensor");
             sendBroadcast(broadcastIntent);
         }
+
+        FileIO.writeLogcatLogsToFile();
     }
 
     @Nullable

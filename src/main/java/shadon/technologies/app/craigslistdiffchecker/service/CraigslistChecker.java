@@ -13,6 +13,7 @@ import android.util.Log;
 
 import shadon.technologies.app.craigslistdiffchecker.R;
 import shadon.technologies.app.craigslistdiffchecker.files.ConfigFiles;
+import shadon.technologies.app.craigslistdiffchecker.craigsObjects.CraigsListSavedSearch;
 import shadon.technologies.app.craigslistdiffchecker.sleeper.Sleep;
 import shadon.technologies.app.craigslistdiffchecker.uniquenessCheckers.LinkCheck;
 
@@ -26,11 +27,11 @@ import static android.media.AudioManager.RINGER_MODE_SILENT;
  */
 public class CraigslistChecker extends AsyncTask<URL, String, Boolean> {
 
-    public static final String TAG = "CraigslistChecker";
+    private static final String TAG = "CraigslistChecker";
 
-    public ArrayList<CraigSearch> listSearches;
+    private ArrayList<CraigsListSavedSearch> listSearches;
 
-    public CraigsDiffBackgroundService parentActivity;
+    private CraigsDiffBackgroundService parentActivity;
 
     public CraigslistChecker(CraigsDiffBackgroundService craigsDiffBackgroundService){
         parentActivity = craigsDiffBackgroundService;
@@ -83,7 +84,7 @@ public class CraigslistChecker extends AsyncTask<URL, String, Boolean> {
                 .setContentTitle(searchName)
                 .setContentText(searchSearchName)
                 .setAutoCancel(true)
-                .setSmallIcon(R.drawable.ic_launcher)
+                .setSmallIcon(R.drawable.logo)
                 .setContentIntent(pIntent).build();
 
         NotificationManager nm = (NotificationManager) parentActivity.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -94,7 +95,7 @@ public class CraigslistChecker extends AsyncTask<URL, String, Boolean> {
     public void checkCraigslist() {
 
         while (!isCancelled()) {
-            for (CraigSearch search : listSearches) {
+            for (CraigsListSavedSearch search : listSearches) {
                 LinkCheck.CheckSaleLinks(this, search);
 
                 try {

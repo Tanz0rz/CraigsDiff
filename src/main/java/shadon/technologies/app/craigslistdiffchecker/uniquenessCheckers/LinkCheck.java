@@ -4,7 +4,8 @@ import android.util.Log;
 
 import shadon.technologies.app.craigslistdiffchecker.files.FileIO;
 import shadon.technologies.app.craigslistdiffchecker.files.Paths;
-import shadon.technologies.app.craigslistdiffchecker.service.CraigSearch;
+import shadon.technologies.app.craigslistdiffchecker.craigsObjects.CraigsListSavedSearch;
+import shadon.technologies.app.craigslistdiffchecker.craigsObjects.CraigslistAd;
 import shadon.technologies.app.craigslistdiffchecker.service.CraigslistChecker;
 
 import org.jsoup.Connection;
@@ -27,7 +28,7 @@ public class LinkCheck {
 
     private static final String TAG = "LinkCheck";
 
-    public static void CheckSaleLinks(CraigslistChecker checker, CraigSearch search){
+    public static void CheckSaleLinks(CraigslistChecker checker, CraigsListSavedSearch search){
 
         Log.i(TAG, "RUNNING SEARCH NAMED: " + search.name);
         Log.d(TAG, "Search url: " + search.url);
@@ -73,7 +74,7 @@ public class LinkCheck {
 
     }
 
-    static private ArrayList<CraigslistAd> readAllLinksFromPageSource(CraigSearch search) {
+    static private ArrayList<CraigslistAd> readAllLinksFromPageSource(CraigsListSavedSearch search) {
 
         Connection.Response html;
         Document document = null;
