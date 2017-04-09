@@ -17,18 +17,18 @@ public class AndroidBackgroundService extends Service {
 
     final String TAG = "CraigsBackgroundService";
 
-    public WorkerThread thread;
+    WorkerThread thread;
 
     @Override
     public void onCreate(){
 
         Log.i(TAG, "Service created!");
-        thread = new WorkerThread(this, ConfigFiles.loadAllSavedSearches());
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
+        thread = new WorkerThread(this, ConfigFiles.loadAllSavedSearches());
         thread.start();
         return START_STICKY;
     }

@@ -2,8 +2,6 @@ package shadon.technologies.app.craigslistdiffchecker.files;
 
 import android.util.Log;
 
-import shadon.technologies.app.craigslistdiffchecker.craigsObjects.CraigslistAd;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -15,6 +13,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import shadon.technologies.app.craigslistdiffchecker.craigsObjects.CraigslistAd;
+
 /**
  * Created by Maveric on 3/29/2017.
  */
@@ -22,6 +22,7 @@ import java.util.Scanner;
 public class FileIO {
 
     public static final String TAG = "FileIO";
+    public static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
 
     public static ArrayList<String> readFile(File fileToRead){
 

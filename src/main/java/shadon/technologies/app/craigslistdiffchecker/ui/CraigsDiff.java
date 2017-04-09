@@ -17,6 +17,7 @@ public class CraigsDiff extends AppCompatActivity {
 
     //todo The flag to determine if the user wants the service to actually die is a sloppy global. Find out how to do this in a cleaner way.
     //todo Right now the LinkCheck class only returns one new ad at a time. This can be changed to return and notify on a list.
+    //todo Improve the search add dialog fragment usability
 
     public static final String TAG = "CraigsDiff";
     public static boolean USER_STOPPED = false;
