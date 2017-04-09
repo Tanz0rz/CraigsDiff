@@ -22,7 +22,6 @@ import shadon.technologies.app.craigslistdiffchecker.craigsObjects.CraigslistAd;
 public class FileIO {
 
     public static final String TAG = "FileIO";
-    public static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
 
     public static ArrayList<String> readFile(File fileToRead){
 
