@@ -2,11 +2,6 @@ package shadon.technologies.app.craigslistdiffchecker.uniquenessCheckers;
 
 import android.util.Log;
 
-import shadon.technologies.app.craigslistdiffchecker.files.FileIO;
-import shadon.technologies.app.craigslistdiffchecker.files.Paths;
-import shadon.technologies.app.craigslistdiffchecker.service.CraigSearch;
-import shadon.technologies.app.craigslistdiffchecker.service.CraigslistChecker;
-
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -20,6 +15,11 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import shadon.technologies.app.craigslistdiffchecker.craigsObjects.CraigslistAd;
+import shadon.technologies.app.craigslistdiffchecker.craigsObjects.SavedSearch;
+import shadon.technologies.app.craigslistdiffchecker.files.FileIO;
+import shadon.technologies.app.craigslistdiffchecker.files.Paths;
+
 /**
  * Created by Maveric on 6/25/2016.
  */
@@ -27,7 +27,7 @@ public class LinkCheck {
 
     private static final String TAG = "LinkCheck";
 
-    public static void CheckSaleLinks(CraigslistChecker checker, CraigSearch search){
+    public static CraigslistAd CheckSaleLinks(SavedSearch search){
 
         Log.i(TAG, "RUNNING SEARCH NAMED: " + search.name);
         Log.d(TAG, "Search url: " + search.url);
@@ -48,12 +48,10 @@ public class LinkCheck {
         listCraigslistAds = findAdLinks(listCraigslistPageLinks);
 
         CraigslistAd newAd = findNewLink(listCraigslistAds, listOldSearches);
-        if(newAd == null) {
-            Log.i(TAG, "There are no new links on the page");
-        } else {
-            checker.callPublishProgress(newAd.title, newAd.url, search.name);
+        if(newAd != null) {
             FileIO.writeLinksFile(newAd);
         }
+        return newAd;
     }
 
     static private ArrayList<CraigslistAd> findAdLinks(ArrayList<CraigslistAd> listAllPageLinks) {
@@ -73,7 +71,7 @@ public class LinkCheck {
 
     }
 
-    static private ArrayList<CraigslistAd> readAllLinksFromPageSource(CraigSearch search) {
+    static private ArrayList<CraigslistAd> readAllLinksFromPageSource(SavedSearch search) {
 
         Connection.Response html;
         Document document = null;
@@ -130,18 +128,17 @@ public class LinkCheck {
             }
         }
 
-        Log.i(TAG, "Printing out all link differences");
-        for(CraigslistAd ad : listUnseenCraigslistAds){
-            Log.i(TAG, ad.url);
-        }
-
-        if (listUnseenCraigslistAds.size() == 0) {
+        if (listUnseenCraigslistAds.size() > 0) {
+            Log.i(TAG, "New ads found. Printing out all link differences");
+            for (CraigslistAd ad : listUnseenCraigslistAds) {
+                Log.i(TAG, ad.url);
+            }
+            // Just grab the first new link for now
+            CraigslistAd newAd = listUnseenCraigslistAds.get(0);
+            return newAd;
+        } else {
+            Log.i(TAG, "No new links found");
             return null;
         }
-
-        // Just grab the first new link for now
-        CraigslistAd newAd = listUnseenCraigslistAds.get(0);
-
-        return newAd;
     }
 }

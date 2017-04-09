@@ -13,6 +13,8 @@ public class Paths {
     public static final String saveSearchesPath = Paths.build(dataFolderLocation, "savedSearches.txt");
     public static final String cachedSearchesFileLocation = Paths.build(dataFolderLocation, "cachedURLs.txt");
 
+    public static final String logFolderLocation = Paths.build(baseFolder, "logs");
+
     public static String build(String... pieces) {
         StringBuilder builder = new StringBuilder();
         for (String piece : pieces) {
