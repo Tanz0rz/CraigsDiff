@@ -8,13 +8,21 @@ android {
         applicationId "shadon.technologies.app.craigslistdiffchecker"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 2
-        versionName "alpha-1.x"
+        versionCode 4
+        versionName "alpha-1.0.4"
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+sourceSets {
+    main {
+        resources {
+            exclude ("app/res/psd/**")
         }
     }
 }
@@ -29,5 +37,11 @@ dependencies {
     compile group: 'org.jsoup', name: 'jsoup', version: '1.10.2'
     // https://mvnrepository.com/artifact/commons-collections/commons-collections
     compile group: 'commons-collections', name: 'commons-collections', version: '3.2.2'
+
+// AWS libraries may be screwing up the compilation of the project. Keep this in mind!
+
+    compile 'com.amazonaws:aws-android-sdk-core:2.2.+'
+    compile 'com.amazonaws:aws-android-sdk-s3:2.2.+'
+    compile 'com.amazonaws:aws-android-sdk-ddb:2.2.+'
 
 }

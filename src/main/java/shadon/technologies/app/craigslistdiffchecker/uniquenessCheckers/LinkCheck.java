@@ -129,7 +129,7 @@ public class LinkCheck {
         }
 
         if (listUnseenCraigslistAds.size() > 0) {
-            Log.d(TAG, "New ads found. Printing out all link differences");
+            Log.i(TAG, "New ads found. Printing out all link differences");
             for (CraigslistAd ad : listUnseenCraigslistAds) {
                 Log.i(TAG, ad.url);
             }

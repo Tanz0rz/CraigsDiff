@@ -34,6 +34,7 @@ public class WorkerThread extends Thread {
 
         while(continueRunning) {
             for (SavedSearch search : listSavedSearches) {
+
                 CraigslistAd newAd = LinkCheck.CheckSaleLinks(search);
 
                 if (newAd != null) {

@@ -61,6 +61,7 @@ public class ConfigFiles {
 
     public static void saveSearchesToFile(List<SavedSearch> searchesToSave) throws IOException {
         File savedSearchesFile = new File(Paths.saveSearchesPath);
+        Log.e(TAG, "Trying to make the directory: " + Paths.saveSearchesPath);
         savedSearchesFile.getParentFile().mkdirs();
         writeToFile(searchesToSave);
     }

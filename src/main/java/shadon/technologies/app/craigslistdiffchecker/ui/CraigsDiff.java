@@ -1,17 +1,22 @@
 package shadon.technologies.app.craigslistdiffchecker.ui;
 
+import android.Manifest;
 import android.app.ActivityManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.StrictMode;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import shadon.technologies.app.craigslistdiffchecker.service.AndroidBackgroundService;
 import shadon.technologies.app.craigslistdiffchecker.R;
+import shadon.technologies.app.craigslistdiffchecker.service.AndroidBackgroundService;
 
 public class CraigsDiff extends AppCompatActivity {
 
@@ -33,6 +38,8 @@ public class CraigsDiff extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        allowNetworkingOnUiThread();
+
         btnStartService = (Button) findViewById(R.id.btnStartService);
         btnStopService = (Button) findViewById(R.id.btnStopService);
         btnManageSearches = (Button) findViewById(R.id.btnManageSearches);
@@ -44,9 +51,11 @@ public class CraigsDiff extends AppCompatActivity {
         btnStartService.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CraigsDiff.USER_STOPPED = false;
-                startService(backgroundService);
-                updateServiceStatusText();
+                if(!serviceIsRunning()) {
+                    CraigsDiff.USER_STOPPED = false;
+                    startService(backgroundService);
+                    updateServiceStatusText();
+                }
             }
         });
 
@@ -91,6 +100,7 @@ public class CraigsDiff extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        verifyStoragePermissions();
         updateServiceStatusText();
     }
 
@@ -110,4 +120,65 @@ public class CraigsDiff extends AppCompatActivity {
     public void onBackPressed() {
         moveTaskToBack(true);
     }
+
+    private void allowNetworkingOnUiThread(){
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+    }
+
+    public static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
+
+    private void verifyStoragePermissions() {
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+//            // Should we show an explanation?
+//            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+//                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//
+//                // Show an explanation to the user *asynchronously* -- don't block
+//                // this thread waiting for the user's response! After the user
+//                // sees the explanation, try again to request the permission.
+//
+//            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+//            }
+        }
+    }
+
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode,
+//                                           String permissions[], int[] grantResults) {
+//        switch (requestCode) {
+//            case MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE: {
+//                // If request is cancelled, the result arrays are empty.
+//                if (grantResults.length > 0
+//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//
+//                    // permission was granted, yay! Do the
+//                    // contacts-related task you need to do.
+//
+//                } else {
+//
+//                    // permission denied, boo! Disable the
+//                    // functionality that depends on this permission.
+//                }
+//                return;
+//            }
+//
+//            // other 'case' lines to check for other
+//            // permissions this app might request
+//        }
+//    }
 }

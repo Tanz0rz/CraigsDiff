@@ -21,7 +21,6 @@ public class AndroidBackgroundService extends Service {
 
     @Override
     public void onCreate(){
-
         Log.i(TAG, "Service created!");
     }
 
@@ -48,7 +47,12 @@ public class AndroidBackgroundService extends Service {
             sendBroadcast(broadcastIntent);
         }
 
-        FileIO.writeLogcatLogsToFile();
+
+        try  {
+            FileIO.writeLogsToS3(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Nullable
