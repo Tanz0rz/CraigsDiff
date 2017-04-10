@@ -21,7 +21,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="shadon.technologies.app.craigslistdiffchecker.ui.ManageSearchesScreenActivity"></activity>
+        <activity android:name="shadon.technologies.app.craigslistdiffchecker.ui.ManageSearches"></activity>
 
         <service
             android:name="shadon.technologies.app.craigslistdiffchecker.service.AndroidBackgroundService"

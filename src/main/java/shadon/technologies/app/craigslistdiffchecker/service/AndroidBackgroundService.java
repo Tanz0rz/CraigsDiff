@@ -6,9 +6,9 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import shadon.technologies.app.craigslistdiffchecker.config.CraigsConfig;
 import shadon.technologies.app.craigslistdiffchecker.files.ConfigFiles;
-import shadon.technologies.app.craigslistdiffchecker.files.FileIO;
-import shadon.technologies.app.craigslistdiffchecker.ui.CraigsDiff;
+import shadon.technologies.app.craigslistdiffchecker.network.NetworkCommunication;
 
 /**
  * Created by Maveric on 6/24/2016.
@@ -22,6 +22,7 @@ public class AndroidBackgroundService extends Service {
     @Override
     public void onCreate(){
         Log.i(TAG, "Service created!");
+        NetworkCommunication.writeLogsToS3(this);
     }
 
     @Override
@@ -39,20 +40,14 @@ public class AndroidBackgroundService extends Service {
         thread.stopExecution();
         thread.interrupt();
 
-        if (CraigsDiff.USER_STOPPED) {
+        if (CraigsConfig.USER_STOPPED) {
             Log.i(TAG, "Service stopped by user");
         } else {
             Log.i(TAG, "Service killed by Android OS");
             Intent broadcastIntent = new Intent("shadon.technologies.app.craigslistdiffchecker.RestartSensor");
             sendBroadcast(broadcastIntent);
         }
-
-
-        try  {
-            FileIO.writeLogsToS3(this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        NetworkCommunication.writeLogsToS3(this);
     }
 
     @Nullable

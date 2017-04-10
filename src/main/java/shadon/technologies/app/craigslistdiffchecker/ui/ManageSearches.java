@@ -26,7 +26,7 @@ import shadon.technologies.app.craigslistdiffchecker.service.AndroidBackgroundSe
 /**
  * Created by Monday on 7/31/2016.
  */
-public class ManageSearchesScreenActivity extends AppCompatActivity {
+public class ManageSearches extends AppCompatActivity {
 
     public static String TAG = "ManageSearch";
 

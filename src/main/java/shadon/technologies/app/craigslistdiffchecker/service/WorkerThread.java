@@ -4,7 +4,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-import shadon.technologies.app.craigslistdiffchecker.Notifications.NotificationGenerator;
+import shadon.technologies.app.craigslistdiffchecker.notifications.NotificationGenerator;
 import shadon.technologies.app.craigslistdiffchecker.craigsObjects.CraigslistAd;
 import shadon.technologies.app.craigslistdiffchecker.craigsObjects.SavedSearch;
 import shadon.technologies.app.craigslistdiffchecker.uniquenessCheckers.LinkCheck;

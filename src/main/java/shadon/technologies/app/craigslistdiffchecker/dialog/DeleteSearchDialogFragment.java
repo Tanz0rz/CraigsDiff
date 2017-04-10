@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import shadon.technologies.app.craigslistdiffchecker.R;
-import shadon.technologies.app.craigslistdiffchecker.ui.ManageSearchesScreenActivity;
+import shadon.technologies.app.craigslistdiffchecker.ui.ManageSearches;
 
 /**
  * Created by Monday on 8/6/2016.
@@ -31,7 +31,7 @@ public class DeleteSearchDialogFragment extends DialogFragment {
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    ((ManageSearchesScreenActivity) getActivity()).removeSearch(providedName);
+                                    ((ManageSearches) getActivity()).removeSearch(providedName);
                                 }
                             })
                     .setNegativeButton("Cancel",

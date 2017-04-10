@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -16,16 +15,16 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import shadon.technologies.app.craigslistdiffchecker.R;
+import shadon.technologies.app.craigslistdiffchecker.config.CraigsConfig;
 import shadon.technologies.app.craigslistdiffchecker.service.AndroidBackgroundService;
 
 public class CraigsDiff extends AppCompatActivity {
 
-    //todo The flag to determine if the user wants the service to actually die is a sloppy global. Find out how to do this in a cleaner way.
     //todo Right now the LinkCheck class only returns one new ad at a time. This can be changed to return and notify on a list.
     //todo Improve the search add dialog fragment usability
+    //todo Automatically start up again after an update
 
     public static final String TAG = "CraigsDiff";
-    public static boolean USER_STOPPED = false;
 
     Button btnStartService;
     Button btnStopService;
@@ -38,7 +37,7 @@ public class CraigsDiff extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        allowNetworkingOnUiThread();
+        CraigsConfig.SetConfigDefaults();
 
         btnStartService = (Button) findViewById(R.id.btnStartService);
         btnStopService = (Button) findViewById(R.id.btnStopService);
@@ -52,7 +51,7 @@ public class CraigsDiff extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(!serviceIsRunning()) {
-                    CraigsDiff.USER_STOPPED = false;
+                    CraigsConfig.USER_STOPPED = false;
                     startService(backgroundService);
                     updateServiceStatusText();
                 }
@@ -62,7 +61,7 @@ public class CraigsDiff extends AppCompatActivity {
         btnStopService.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CraigsDiff.USER_STOPPED = true;
+                CraigsConfig.USER_STOPPED = true;
                 stopService(backgroundService);
                 updateServiceStatusText();
             }
@@ -71,7 +70,7 @@ public class CraigsDiff extends AppCompatActivity {
         btnManageSearches.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent nextScreen = new Intent(getApplicationContext(),ManageSearchesScreenActivity.class);
+                Intent nextScreen = new Intent(getApplicationContext(),ManageSearches.class);
                 startActivity(nextScreen);
             }
         });
@@ -119,11 +118,6 @@ public class CraigsDiff extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);
-    }
-
-    private void allowNetworkingOnUiThread(){
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
     }
 
     public static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
