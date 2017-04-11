@@ -34,7 +34,13 @@
             android:label="StartServiceAtBootTimeAndRestartServiceWhenStopped">
             <intent-filter>
                 <action android:name="shadon.technologies.app.craigslistdiffchecker.RestartSensor"/>
+            </intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_REPLACED" />
+                <data android:scheme="package"/>
             </intent-filter>
         </receiver>
 

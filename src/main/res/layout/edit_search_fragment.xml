@@ -3,39 +3,16 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save Search"
-        android:id="@+id/button_save"
-        android:background="#6d82b5"
-        android:layout_below="@+id/text_urlInput"
-        android:layout_marginTop="100dp"
-        android:layout_alignParentEnd="true"
-        android:visibility="invisible" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Cancel"
-        android:id="@+id/button_cancel"
-        android:background="#a16767"
-        android:layout_below="@+id/text_urlInput"
-        android:layout_marginTop="100dp"
-        android:layout_alignParentStart="true"
-        android:visibility="invisible" />
-
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/text_NameInput"
         android:hint="@string/searchNameHint"
         android:enabled="true"
         android:singleLine="true"
+        android:imeOptions="actionNext"
         android:layout_below="@+id/textView2"
-        android:layout_alignParentStart="true"
-        android:layout_toStartOf="@+id/button_save"
-        android:layout_alignEnd="@+id/button_save" />
+        android:layout_alignParentStart="true"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -46,8 +23,7 @@
         android:layout_marginTop="54dp"
         android:textAlignment="textStart"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignEnd="@+id/button_save" />
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -57,11 +33,10 @@
         android:id="@+id/text_URLLabel"
         android:layout_marginTop="37dp"
         android:layout_below="@+id/text_NameInput"
-        android:layout_alignParentStart="true"
-        android:layout_alignEnd="@+id/button_save" />
+        android:layout_alignParentStart="true" />
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textMultiLine"
         android:ems="10"
@@ -69,6 +44,5 @@
         android:hint="@string/pasteUrlHint"
         android:enabled="true"
         android:layout_below="@+id/text_URLLabel"
-        android:layout_alignParentStart="true"
-        android:layout_alignEnd="@+id/button_save" />
+        android:layout_alignParentStart="true"/>
 </RelativeLayout>

@@ -16,7 +16,8 @@ public class AndroidServiceRestarterBroadcastReceiver extends BroadcastReceiver 
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Log.i(TAG, "The phone just booted up or the service was consumed by Android. Starting the service up.");
+        Log.i(TAG, "The phone just booted up, the app was just updated, or (possibly) the service was" +
+                " consumed by Android and it triggered this BroadcastREceiver. Starting the service up.");
         Intent myIntent = new Intent(context, AndroidBackgroundService.class);
         context.startService(myIntent);
     }

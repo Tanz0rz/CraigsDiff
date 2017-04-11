@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import shadon.technologies.app.craigslistdiffchecker.notifications.NotificationGenerator;
 import shadon.technologies.app.craigslistdiffchecker.craigsObjects.CraigslistAd;
 import shadon.technologies.app.craigslistdiffchecker.craigsObjects.SavedSearch;
-import shadon.technologies.app.craigslistdiffchecker.uniquenessCheckers.LinkCheck;
 
 /**
  * Created by Maveric on 4/8/2017.
@@ -35,10 +34,12 @@ public class WorkerThread extends Thread {
         while(continueRunning) {
             for (SavedSearch search : listSavedSearches) {
 
-                CraigslistAd newAd = LinkCheck.CheckSaleLinks(search);
+                ArrayList<CraigslistAd> listNewAds = LinkCheck.CheckSaleLinks(service, search);
 
-                if (newAd != null) {
-                    NotificationGenerator.pushNewAdNotification(service, newAd, search.name);
+                if (listNewAds != null) {
+                    for (CraigslistAd newAd : listNewAds) {
+                        NotificationGenerator.pushNewAdNotification(service, newAd, search.name);
+                    }
                 }
 
                 try {

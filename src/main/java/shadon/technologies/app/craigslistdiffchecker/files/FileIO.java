@@ -45,9 +45,9 @@ public class FileIO {
         return urls;
     }
 
-    public static void writeLinksFile(CraigslistAd ad){
+    public static void writeLinksFile(ArrayList<CraigslistAd> listAds){
 
-        Log.d(TAG, "Persisting a new URL: " + ad.url);
+        Log.d(TAG, "Persisting a new links");
 
         File linksFileLocation = new File(Paths.cachedSearchesFileLocation);
 
@@ -60,7 +60,9 @@ public class FileIO {
             BufferedWriter bw = new BufferedWriter(fw);
             PrintWriter out = new PrintWriter(bw))
         {
-            out.println(ad.url);
+            for (CraigslistAd ad : listAds) {
+                out.println(ad.url);
+            }
         } catch (IOException e) {
             Log.e(TAG, "Unable to write file");
             e.printStackTrace();
