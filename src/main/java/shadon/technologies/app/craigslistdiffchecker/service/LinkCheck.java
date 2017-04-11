@@ -1,4 +1,4 @@
-package shadon.technologies.app.craigslistdiffchecker.uniquenessCheckers;
+package shadon.technologies.app.craigslistdiffchecker.service;
 
 import android.util.Log;
 
@@ -19,6 +19,7 @@ import shadon.technologies.app.craigslistdiffchecker.craigsObjects.CraigslistAd;
 import shadon.technologies.app.craigslistdiffchecker.craigsObjects.SavedSearch;
 import shadon.technologies.app.craigslistdiffchecker.files.FileIO;
 import shadon.technologies.app.craigslistdiffchecker.files.Paths;
+import shadon.technologies.app.craigslistdiffchecker.network.NetworkCommunication;
 
 /**
  * Created by Maveric on 6/25/2016.
@@ -27,7 +28,9 @@ public class LinkCheck {
 
     private static final String TAG = "LinkCheck";
 
-    public static CraigslistAd CheckSaleLinks(SavedSearch search){
+    AndroidBackgroundService service;
+
+    public static ArrayList<CraigslistAd> CheckSaleLinks(AndroidBackgroundService service, SavedSearch search){
 
         Log.i(TAG, "RUNNING SEARCH NAMED: " + search.name);
         Log.d(TAG, "Search url: " + search.url);
@@ -44,14 +47,19 @@ public class LinkCheck {
         }
 
         listCraigslistPageLinks = readAllLinksFromPageSource(search);
+        if (listCraigslistPageLinks == null) {
+            Log.e(TAG, "listCraigslistPageLinks is null. Returning without checking for new links.");
+            NetworkCommunication.writeLogsToS3(service);
+            return null;
+        }
 
         listCraigslistAds = findAdLinks(listCraigslistPageLinks);
 
-        CraigslistAd newAd = findNewLink(listCraigslistAds, listOldSearches);
-        if(newAd != null) {
-            FileIO.writeLinksFile(newAd);
+        ArrayList<CraigslistAd> listNewAds = findNewLinks(listCraigslistAds, listOldSearches);
+        if(listNewAds != null) {
+            FileIO.writeLinksFile(listNewAds);
         }
-        return newAd;
+        return listNewAds;
     }
 
     static private ArrayList<CraigslistAd> findAdLinks(ArrayList<CraigslistAd> listAllPageLinks) {
@@ -103,7 +111,7 @@ public class LinkCheck {
         return listLinksFoundOnPage;
     }
 
-    private static CraigslistAd findNewLink(ArrayList<CraigslistAd> listNewCriagslistAds, ArrayList<String> listSavedSaleUrls) {
+    private static ArrayList<CraigslistAd> findNewLinks(ArrayList<CraigslistAd> listNewCriagslistAds, ArrayList<String> listSavedSaleUrls) {
 
         Log.d(TAG, "List of new links:");
 
@@ -133,9 +141,7 @@ public class LinkCheck {
             for (CraigslistAd ad : listUnseenCraigslistAds) {
                 Log.i(TAG, ad.url);
             }
-            // Just grab the first new link for now
-            CraigslistAd newAd = listUnseenCraigslistAds.get(0);
-            return newAd;
+            return listUnseenCraigslistAds;
         } else {
             Log.i(TAG, "No new links found");
             return null;

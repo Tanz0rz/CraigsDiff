@@ -20,9 +20,8 @@ import shadon.technologies.app.craigslistdiffchecker.service.AndroidBackgroundSe
 
 public class CraigsDiff extends AppCompatActivity {
 
-    //todo Right now the LinkCheck class only returns one new ad at a time. This can be changed to return and notify on a list.
-    //todo Improve the search add dialog fragment usability
-    //todo Automatically start up again after an update
+    //todo Handle bad search errors
+    //todo Handle no-internet errors(?)
 
     public static final String TAG = "CraigsDiff";
 
