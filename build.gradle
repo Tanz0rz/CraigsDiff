@@ -8,8 +8,8 @@ android {
         applicationId "shadon.technologies.app.craigslistdiffchecker"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 15
-        versionName "alpha-1.1.10"
+        versionCode 33
+        versionName "alpha-1.2.0"
     }
     buildTypes {
         release {
