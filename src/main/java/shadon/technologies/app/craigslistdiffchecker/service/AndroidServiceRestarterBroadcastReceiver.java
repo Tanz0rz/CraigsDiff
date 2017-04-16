@@ -9,15 +9,16 @@ import android.util.Log;
  * Created by Maveric on 4/1/2017.
  */
 
-public class CraigsDiffServiceRestarterBroadcastReceiver extends BroadcastReceiver {
+public class AndroidServiceRestarterBroadcastReceiver extends BroadcastReceiver {
 
     final String TAG = "CraigsBroadcastReceiver";
 
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Log.i(TAG, "The phone just booted up or the service was consumed by Android. Starting the service up.");
-        Intent myIntent = new Intent(context, CraigsDiffBackgroundService.class);
+        Log.i(TAG, "The phone just booted up, the app was just updated, or (possibly) the service was" +
+                " consumed by Android and it triggered this BroadcastREceiver. Starting the service up.");
+        Intent myIntent = new Intent(context, AndroidBackgroundService.class);
         context.startService(myIntent);
     }
 }

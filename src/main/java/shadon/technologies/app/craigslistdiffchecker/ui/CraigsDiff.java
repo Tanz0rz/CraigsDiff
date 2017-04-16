@@ -1,8 +1,8 @@
 package shadon.technologies.app.craigslistdiffchecker.ui;
 
 import android.app.ActivityManager;
-import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,15 +11,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import shadon.technologies.app.craigslistdiffchecker.service.CraigsDiffBackgroundService;
 import shadon.technologies.app.craigslistdiffchecker.R;
+import shadon.technologies.app.craigslistdiffchecker.config.CraigsConfig;
+import shadon.technologies.app.craigslistdiffchecker.permissions.PermissionsManager;
+import shadon.technologies.app.craigslistdiffchecker.service.AndroidBackgroundService;
 
 public class CraigsDiff extends AppCompatActivity {
 
-    //todo The flag to determine if the user wants the service to actually die is a sloppy global. Find out how to do this in a cleaner way.
+    //todo Handle bad search errors
+    //todo Handle no-internet errors(?)
 
     public static final String TAG = "CraigsDiff";
-    public static boolean USER_STOPPED = false;
 
     Button btnStartService;
     Button btnStopService;
@@ -32,27 +34,34 @@ public class CraigsDiff extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        CraigsConfig.SetConfigDefaults();
+        if (!PermissionsManager.CheckStoragePermissions(this)) {
+            PermissionsManager.RequestStoragePermissions(this);
+        }
+
         btnStartService = (Button) findViewById(R.id.btnStartService);
         btnStopService = (Button) findViewById(R.id.btnStopService);
         btnManageSearches = (Button) findViewById(R.id.btnManageSearches);
 
         textViewServiceStatus = (TextView) findViewById(R.id.textViewServiceStatus);
 
-        backgroundService = new Intent(getBaseContext(), CraigsDiffBackgroundService.class);
+        backgroundService = new Intent(getBaseContext(), AndroidBackgroundService.class);
 
         btnStartService.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CraigsDiff.USER_STOPPED = false;
-                startService(backgroundService);
-                updateServiceStatusText();
+                if(!serviceIsRunning() && PermissionsManager.CheckStoragePermissions(getBaseContext())) {
+                    CraigsConfig.USER_STOPPED = false;
+                    startService(backgroundService);
+                    updateServiceStatusText();
+                }
             }
         });
 
         btnStopService.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CraigsDiff.USER_STOPPED = true;
+                CraigsConfig.USER_STOPPED = true;
                 stopService(backgroundService);
                 updateServiceStatusText();
             }
@@ -61,30 +70,30 @@ public class CraigsDiff extends AppCompatActivity {
         btnManageSearches.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent nextScreen = new Intent(getApplicationContext(),ManageSearchesScreenActivity.class);
+                Intent nextScreen = new Intent(getApplicationContext(),ManageSearches.class);
                 startActivity(nextScreen);
             }
         });
     }
 
-    private boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private void updateServiceStatusText() {
-        if (isMyServiceRunning(CraigsDiffBackgroundService.class)) {
+        if (serviceIsRunning()) {
             textViewServiceStatus.setText("RUNNING");
             textViewServiceStatus.setTextColor(Color.GREEN);
         } else {
             textViewServiceStatus.setText("NOT RUNNING");
             textViewServiceStatus.setTextColor(Color.RED);
         }
+    }
+
+    private boolean serviceIsRunning() {
+        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (AndroidBackgroundService.class.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -108,5 +117,22 @@ public class CraigsDiff extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PermissionsManager.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                } else {
+                    PermissionsManager.showPremissionsExplanation(this);
+                }
+                return;
+            }
+        }
     }
 }
