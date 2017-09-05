@@ -68,7 +68,7 @@ public class LinkCheck {
 
         for (CraigslistAd craigslistAd : listAllPageLinks) {
 
-            Pattern p = Pattern.compile(".*craigslist.org/.../[0-9]*.html");
+            Pattern p = Pattern.compile(".*craigslist.org/.../.*.html");
             Matcher m = p.matcher(craigslistAd.url);
             if (m.matches()) {
                 listCraigslistAds.add(craigslistAd);
